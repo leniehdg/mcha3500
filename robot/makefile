@@ -27,6 +27,7 @@ UNITY_ROOT = ../Unity
 
 # List of build directories
 BUILD_DIR = build build/stm32f4_HAL build/FreeRTOS
+BIN_DIR = bin
 
 # Source files
 SRCDIR = src
