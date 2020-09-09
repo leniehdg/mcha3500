@@ -45,6 +45,11 @@ SRC_STM = \
 	$(SRCDIR)/heartbeat_task.c \
 	$(SRCDIR)/heartbeat_cmd.c \
 	$(SRCDIR)/dummy_task.c
+
+SRC_MPU6050LIB = \
+	$(MPU6050LIB_ROOT)/tm_stm32_gpio.c \
+	$(MPU6050LIB_ROOT)/tm_stm32_i2c.c \
+	$(MPU6050LIB_ROOT)/tm_stm32_mpu6050.c
 	
 # Assembly source files
 A_SRC = \
@@ -116,7 +121,8 @@ INC_STM = \
 	.\
 	src \
 	$(INC_STM_CUBE) \
-	$(INC_RTOS)
+	$(INC_RTOS) \
+	$(MPU6050LIB_ROOT)
 
 TARGET_INCLUDES = $(addprefix -I,$(INC_STM))
 
@@ -125,6 +131,7 @@ TARGET_OBJ =  $(patsubst $(SRCDIR)/%.c, build/%.o, $(SRC_STM))
 TARGET_OBJ += $(patsubst $(SRCDIR)/%.S, build/%.o, $(A_SRC))
 TARGET_OBJ += $(patsubst $(SRCSTMCUBEDIR)/%.c, build/stm32f4_HAL/%.o, $(SRC_STM_CUBE))
 TARGET_OBJ += $(patsubst %.c, build/FreeRTOS/%.o, $(notdir $(SRC_RTOS)))
+TARGET_OBJ +=  $(patsubst $(MPU6050LIB_ROOT)/%.c, build/%.o, $(SRC_MPU6050LIB))
 
 # Compiler Options
 CFLAGS += -std=c99 #Breaks on Linux due to removal of fileno() function from stdio
@@ -174,7 +181,7 @@ LDFLAGS += -T STM32F446RETx_FLASH.ld
 LDFLAGS += $(STM32CUBE_ROOT)/Drivers/CMSIS/Lib/GCC/libarm_cortexM4lf_math.a
 
 # Tell the compiler where to search for any file ending in '.c' if the path isn't given
-VPATH = $(SRCDIR):$(SRCSTMCUBEDIR):$(SRCDIR):$(SRCRTOSDIR)
+VPATH = $(SRCDIR):$(SRCSTMCUBEDIR):$(SRCDIR):$(SRCRTOSDIR):$(MPU6050LIB_ROOT)
 
 # Function to compile objects (.o) from target source (.c / .S) files for each build folder.
 # Allows the makefile to compile user code, HAL library and RTOS from the search path vpath
