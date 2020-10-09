@@ -44,7 +44,8 @@ SRC_STM = \
 	$(SRCDIR)/uart.c \
 	$(SRCDIR)/heartbeat_task.c \
 	$(SRCDIR)/heartbeat_cmd.c \
-	$(SRCDIR)/dummy_task.c
+	$(SRCDIR)/dummy_task.c \
+	$(SRCDIR)/qpas_sub_noblas.c
 
 SRC_MPU6050LIB = \
 	$(MPU6050LIB_ROOT)/tm_stm32_gpio.c \
