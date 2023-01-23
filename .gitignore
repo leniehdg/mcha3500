@@ -1,3 +1,6 @@
+#mcha libraires that need to be ignored
+libraries/
+
 # Sublime Text
 *.sublime-workspace
 *.bak

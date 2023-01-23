@@ -1,9 +1,0 @@
-[submodule "STM32Cube_F4_FW"]
-	path = STM32Cube_F4_FW
-	url = https://github.com/STMicroelectronics/STM32CubeF4.git
-[submodule "CMSIS-FreeRTOS"]
-	path = CMSIS-FreeRTOS
-	url = https://github.com/ARM-software/CMSIS-FreeRTOS.git
-[submodule "CMSIS_5"]
-	path = CMSIS_5
-	url = https://github.com/ARM-software/CMSIS_5.git

@@ -20,10 +20,10 @@ OPTIMIZE = -Os
 WRAP_PRINTF = -Wl,-wrap,printf -fno-builtin-printf
 
 # Location of dependencies
-STM32CUBE_ROOT = ../STM32Cube_F4_FW
-CMSIS_ROOT = ../CMSIS_5
-RTOS_ROOT = ../CMSIS-FreeRTOS
-UNITY_ROOT = ../Unity
+STM32CUBE_ROOT = ../../libraries/STM32Cube_F4_FW
+CMSIS_ROOT = ../../libraries/CMSIS_5
+RTOS_ROOT = ../../libraries/CMSIS-FreeRTOS
+UNITY_ROOT = ../../libraries/Unity
 
 # List of build directories
 BUILD_DIR = build build/stm32f4_HAL build/FreeRTOS
