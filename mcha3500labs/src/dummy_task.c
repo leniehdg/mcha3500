@@ -5,6 +5,7 @@
 #include "stm32f4xx_hal.h"
 #include "cmsis_os2.h"
 #include "uart.h"
+#include "pendulum.h"
 
 static void dummy_task_update(void *arg);
 
@@ -60,7 +61,9 @@ void dummy_task_update(void *arg)
     while(1)
     {
         // TODO: Add print statements for motor and potentiometer
-
+        float pot_voltage = pendulum_read_voltage();
+        printf('pot votlage: ', pot_voltage)
+        
         // Non-blocking delay to wait
         osDelay(1000);
     }
