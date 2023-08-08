@@ -25,6 +25,7 @@ int main(void)
     uart_init();
     pendulum_init();
     motor_PWM_init();
+    motor_encoder_init();
 
     // Initialise task modules
     heartbeat_task_init();
