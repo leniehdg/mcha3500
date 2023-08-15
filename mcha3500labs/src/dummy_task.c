@@ -62,13 +62,18 @@ void dummy_task_update(void *arg)
     while(1)
     {
         // TODO: Add print statements for motor and potentiometer
-        //float volt = pendulum_read_voltage();
-        //printf("%f\n", volt);
+        
+        /*
+        float volt = pendulum_read_voltage();
+        printf("%f\n", volt);
+        
         int32_t enc_count = motor_encoder_getValue();
         printf("encoder: %d\n", enc_count);
+        
         float voltage = pendulum_read_voltage();
         printf("potentiometer: %f\n", voltage);
-
+        */
+       
         // Non-blocking delay to wait
         osDelay(1000);
     }
