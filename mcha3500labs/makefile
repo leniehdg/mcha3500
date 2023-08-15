@@ -46,7 +46,8 @@ SRC_STM = \
 	$(SRCDIR)/heartbeat_cmd.c \
 	$(SRCDIR)/dummy_task.c \
 	$(SRCDIR)/pendulum.c \
-	$(SRCDIR)/motor.c
+	$(SRCDIR)/motor.c \
+	$(SRCDIR)/data_logging.c
 	
 # Assembly source files
 A_SRC = \
