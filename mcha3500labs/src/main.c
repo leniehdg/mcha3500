@@ -9,6 +9,7 @@
 #include "dummy_task.h"
 #include "pendulum.h"
 #include "motor.h"
+#include "data_logging.h"
 
 static void SystemClock_Config(void);
 static void Error_Handler(void);
@@ -31,6 +32,7 @@ int main(void)
     heartbeat_task_init();
     cmd_task_init();
     dummy_task_init();
+    logging_init();
 
     // Start scheduler
     osKernelStart();
