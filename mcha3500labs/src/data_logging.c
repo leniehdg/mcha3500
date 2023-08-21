@@ -1,9 +1,10 @@
-#include <inttypes.h> // For PRIxx and SCNxx macros
+#include <stdint.h> 
 #include "stm32f4xx_hal.h" // to import UNUSED() macro
-#include "cmsis_os.h" // Include CMSIS-RTOS header
+#include "cmsis_os2.h" // Include CMSIS-RTOS header
 
 // Modules that provide commands
 #include "pendulum.h"
+#include "data_logging.h"
 
 /* Variable declarations */
 uint16_t logCount;
@@ -23,10 +24,11 @@ static void log_pendulum(void *argument)
 
     /* TODO: Read the potentiometer voltage */
     float voltage = pendulum_read_voltage();
+    float time = logCount/200;
 
     /* TODO: Print the sample time and potentiometer voltage to the serial terminal in the format [time],[
     voltage] */
-    printf("[%d ms], [%f V]\n", osKernelGetTickCount(), voltage);
+    printf("[%.4f], [%f]\n", time, voltage);
 
     /* TODO: Increment log count */
     logCount++;
@@ -35,6 +37,8 @@ static void log_pendulum(void *argument)
     if (logCount >= 400) { // Assuming 5 ms interval, 400 intervals = 2000 ms (2 seconds)
         pend_logging_stop();
     }
+    
+    // return time;
 }   
 
 
@@ -45,7 +49,7 @@ void logging_init(void)
     const osTimerAttr_t timerAttr = {
         .name = "DataLoggingTimer"
     };
-    timerHandle = osTimerNew(log_pendulum, osTimerOnce, NULL, &timerAttr);
+    timerHandle = osTimerNew(log_pendulum, osTimerPeriodic, NULL, &timerAttr);
     
     // timer starts after initialisation
     pend_logging_start();

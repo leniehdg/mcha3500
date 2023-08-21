@@ -27,12 +27,12 @@ int main(void)
     pendulum_init();
     motor_PWM_init();
     motor_encoder_init();
+    logging_init();
 
     // Initialise task modules
     heartbeat_task_init();
     cmd_task_init();
     dummy_task_init();
-    logging_init();
 
     // Start scheduler
     osKernelStart();
