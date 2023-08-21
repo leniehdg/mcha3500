@@ -20,10 +20,12 @@ typedef struct
 static void _help(int, char *[]);
 static void _reset(int, char *[]);
 static void _cmd_getPotentiometerVoltage(int, char *[]);
+static void _cmd_logPotentiometerVoltage(int, char *[]);
 
 // Modules that provide commands
 #include "heartbeat_cmd.h"
 #include "pendulum.h"
+#include "data_logging.h"
 
 // Command table
 static CMD_T cmd_table[] =
@@ -32,6 +34,7 @@ static CMD_T cmd_table[] =
     {_reset                            , "reset"       , ""                          , "Restarts the system."                   } ,
     {heartbeat_cmd                     , "heartbeat"   , "[start|stop]"              , "Get status or start/stop heartbeat task"} ,
     {_cmd_getPotentiometerVoltage      , "getPot"      , ""                          , "Displays the potentiometer volt level"  } ,
+    {_cmd_logPotentiometerVoltage      , "logPot"      , ""                          , "Logs the potentiometer volt level"      } ,
 };
 enum {CMD_TABLE_SIZE = sizeof(cmd_table)/sizeof(CMD_T)};
 enum {CMD_MAX_TOKENS = 5};      // Maximum number of tokens to process (command + arguments)
@@ -125,6 +128,15 @@ void _cmd_getPotentiometerVoltage(int argc, char *argv[])
 
     // print voltage to serial terminal
     printf("Potentiometer voltage: %f\n", voltage);
+}
+
+void _cmd_logPotentiometerVoltage(int argc, char *argv[])
+{
+    // suppress compiler warnings
+    UNUSED(argc);
+
+    // HOW TO RETURN TIME WHEN LOG_PENDULUM FUNC. ISNT USED OUTSIDE OF DATA_LOGGING.C??
+    
 }
 
 // Command parser and dispatcher
