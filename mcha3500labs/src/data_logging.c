@@ -31,8 +31,7 @@ static void log_pendulum(void *argument)
     /* TODO: Increment log count */
     logCount++;
 
-    /* TODO: Stop logging once 2 seconds is reached (Complete this once you have created the stop function
-    in the next step) */
+    /* TODO: Stop logging once 2 seconds is reached  */
     if (logCount >= 400) { // Assuming 5 ms interval, 400 intervals = 2000 ms (2 seconds)
         pend_logging_stop();
     }
@@ -59,22 +58,12 @@ void pend_logging_start(void)
 
     /* Start the data logging timer */
     osStatus_t status = osTimerStart(timerHandle, 5); // 5 ms interval
-    /* TODO: Check status and handle any errors */
+    
 }
 
 void pend_logging_stop(void)
 {
     /* Stop the data logging timer */
     osStatus_t status = osTimerStop(timerHandle);
-    /* TODO: Check status and handle any errors */
-}
-
-void logging_timer_callback(void *arg)
-{
-    /* This function is called when the timer interval elapses */
-    logCount++;
-    /* Your data logging code here */
-
-    /* Restart the timer for the next interval */
-    osTimerStart(timerHandle, 5); // 5 ms interval
+    
 }
