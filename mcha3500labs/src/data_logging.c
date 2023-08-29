@@ -23,12 +23,12 @@ static void log_pendulum(void *argument)
     UNUSED(argument);
 
     /* TODO: Read the potentiometer voltage */
-    float voltage = pendulum_read_voltage();
-    float time = logCount/200;
+    float voltage = pendulum_read_voltage();        
+    float time = logCount/200.0;
 
     /* TODO: Print the sample time and potentiometer voltage to the serial terminal in the format [time],[
     voltage] */
-    printf("[%.4f], [%f]\n", time, voltage);
+    printf("%.4f, %f\n", time, voltage);        
 
     /* TODO: Increment log count */
     logCount++;
@@ -38,7 +38,7 @@ static void log_pendulum(void *argument)
         pend_logging_stop();
     }
     
-    // return time;
+    return time;
 }   
 
 
@@ -52,7 +52,7 @@ void logging_init(void)
     timerHandle = osTimerNew(log_pendulum, osTimerPeriodic, NULL, &timerAttr);
     
     // timer starts after initialisation
-    pend_logging_start();
+    //pend_logging_start();
 }
 
 void pend_logging_start(void)

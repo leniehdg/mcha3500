@@ -134,8 +134,8 @@ void _cmd_logPotentiometerVoltage(int argc, char *argv[])
 {
     // suppress compiler warnings
     UNUSED(argc);
-
-    // HOW TO RETURN TIME WHEN LOG_PENDULUM FUNC. ISNT USED OUTSIDE OF DATA_LOGGING.C??
+    
+    pend_logging_start(); 
     
 }
 
