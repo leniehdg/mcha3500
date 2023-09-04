@@ -19,16 +19,22 @@ typedef struct
 // Forward declaration for built-in commands
 static void _help(int, char *[]);
 static void _reset(int, char *[]);
+static void _cmd_getPotentiometerVoltage(int, char *[]);
+static void _cmd_logPotentiometerVoltage(int, char *[]);
 
 // Modules that provide commands
 #include "heartbeat_cmd.h"
+#include "pendulum.h"
+#include "data_logging.h"
 
 // Command table
 static CMD_T cmd_table[] =
 {
-    {_help              , "help"        , ""                          , "Displays this help message"             } ,
-    {_reset             , "reset"       , ""                          , "Restarts the system."                   } ,
-    {heartbeat_cmd      , "heartbeat"   , "[start|stop]"              , "Get status or start/stop heartbeat task"} ,
+    {_help                             , "help"        , ""                          , "Displays this help message"             } ,
+    {_reset                            , "reset"       , ""                          , "Restarts the system."                   } ,
+    {heartbeat_cmd                     , "heartbeat"   , "[start|stop]"              , "Get status or start/stop heartbeat task"} ,
+    {_cmd_getPotentiometerVoltage      , "getPot"      , ""                          , "Displays the potentiometer volt level"  } ,
+    {_cmd_logPotentiometerVoltage      , "logPot"      , ""                          , "Logs the potentiometer volt level"      } ,
 };
 enum {CMD_TABLE_SIZE = sizeof(cmd_table)/sizeof(CMD_T)};
 enum {CMD_MAX_TOKENS = 5};      // Maximum number of tokens to process (command + arguments)
@@ -109,6 +115,28 @@ void _print_chip_pinout(void)
         "       |________                   ____________|\n"
         "                \\_________________/\n"
     );
+}
+
+void _cmd_getPotentiometerVoltage(int argc, char *argv[])
+{
+    // suppress compiler warnings
+    UNUSED(argc);
+    //UNUSED(argv);
+
+    // read pot voltage
+    float voltage = pendulum_read_voltage();
+
+    // print voltage to serial terminal
+    printf("Potentiometer voltage: %f\n", voltage);
+}
+
+void _cmd_logPotentiometerVoltage(int argc, char *argv[])
+{
+    // suppress compiler warnings
+    UNUSED(argc);
+    
+    pend_logging_start(); 
+    
 }
 
 // Command parser and dispatcher
