@@ -72,7 +72,7 @@ static void log_pendulum(void)
     //return time;
 }   
 
-void pend_logging_start(void)
+void logging_start(void)
 {
     /* Reset the logCount variable */
     logCount = 0;

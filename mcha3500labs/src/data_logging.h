@@ -3,7 +3,7 @@
 
 /* Add function prototypes here */
 void logging_init(void);
-void pend_logging_start(void);
-void pend_logging_stop(void);
+void logging_start(void);
+void logging_stop(void);
 
 #endif
