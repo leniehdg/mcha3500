@@ -1,10 +1,13 @@
 #include <stdint.h> 
 #include "stm32f4xx_hal.h" // to import UNUSED() macro
 #include "cmsis_os2.h" // Include CMSIS-RTOS header
+#include "uart.h"
 
 // Modules that provide commands
 #include "pendulum.h"
 #include "data_logging.h"
+#include "IMU.h"
+#include "tm_stm32_mpu6050.h"
 
 /* Variable declarations */
 uint16_t logCount;
@@ -13,7 +16,8 @@ static void (*log_function) (void);
 
 /* Function declarations */
 static void log_pointer(void *argument);
-
+static void log_pendulum(void *argument);
+static void log_imu(void);
 
 
 /* Function defintions */
@@ -49,7 +53,7 @@ void logging_stop(void)
 /*      PENDULUM        */
 
 
-static void log_pendulum(void)
+static void log_pendulum(void *argument)
 {
     
 
@@ -72,13 +76,45 @@ static void log_pendulum(void)
     //return time;
 }   
 
+
+/*      IMU        */
+
+
+static void log_imu(void)
+{
+    /* Get the imu angle from accelerometer readings */
+    float accelerometer_angle = get_acc_angle();
+    
+    /* Get the imu X gyro reading */
+    float gyro_angular_velocity = get_gyroX();
+    
+    /* Read the potentiometer voltage */
+    float voltage = pendulum_read_voltage();
+    
+    float time = logCount / 200.0;
+
+    /* Print the time, accelerometer angle, gyro angular velocity, and pot voltage values */
+    printf("%.3f,%.3f,%.3f,%f\n", time, accelerometer_angle, gyro_angular_velocity, voltage);
+
+    /* Increment log count */
+    logCount++;
+
+    /* Stop logging once 5 seconds is reached */
+    if (logCount >= 1000) // 5 seconds at 200 Hz
+    {
+        logging_stop();
+    }
+}
+
+
+
 void logging_start(void)
 {
     /* Reset the logCount variable */
     logCount = 0;
 
     /* function pointer to pend logging func */
-    log_function = &log_pendulum;
+    log_function = &log_imu;    // &log_pendulum;
 
     /* Start the data logging timer */
     osStatus_t status = osTimerStart(timerHandle, 5); // 5 ms interval
