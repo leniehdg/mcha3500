@@ -7,6 +7,8 @@
 #include "uart.h"
 #include "pendulum.h"
 #include "motor.h"
+#include "IMU.h"
+#include "tm_stm32_mpu6050.h"
 
 static void dummy_task_update(void *arg);
 
@@ -63,16 +65,13 @@ void dummy_task_update(void *arg)
     {
         // TODO: Add print statements for motor and potentiometer
         
-        /*
-        float volt = pendulum_read_voltage();
-        printf("%f\n", volt);
-        
         int32_t enc_count = motor_encoder_getValue();
-        printf("encoder: %d\n", enc_count);
         
         float voltage = pendulum_read_voltage();
-        printf("potentiometer: %f\n", voltage);
-        */
+        
+        float accY = get_accY();
+        
+        printf("Voltage: %f  Encoder: %ld  Acceleration Y: %f\n", voltage, enc_count, accY);
        
         // Non-blocking delay to wait
         osDelay(1000);

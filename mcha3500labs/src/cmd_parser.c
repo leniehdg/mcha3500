@@ -21,11 +21,13 @@ static void _help(int, char *[]);
 static void _reset(int, char *[]);
 static void _cmd_getPotentiometerVoltage(int, char *[]);
 static void _cmd_logPotentiometerVoltage(int, char *[]);
+static void _cmd_logIMU(int, char *[]);
 
 // Modules that provide commands
 #include "heartbeat_cmd.h"
 #include "pendulum.h"
 #include "data_logging.h"
+#include "IMU.h"
 
 // Command table
 static CMD_T cmd_table[] =
@@ -35,6 +37,8 @@ static CMD_T cmd_table[] =
     {heartbeat_cmd                     , "heartbeat"   , "[start|stop]"              , "Get status or start/stop heartbeat task"} ,
     {_cmd_getPotentiometerVoltage      , "getPot"      , ""                          , "Displays the potentiometer volt level"  } ,
     {_cmd_logPotentiometerVoltage      , "logPot"      , ""                          , "Logs the potentiometer volt level"      } ,
+    {_cmd_logIMU                       , "logIMU"      , ""                          , "Begins logging and displaying the IMU." } , 
+
 };
 enum {CMD_TABLE_SIZE = sizeof(cmd_table)/sizeof(CMD_T)};
 enum {CMD_MAX_TOKENS = 5};      // Maximum number of tokens to process (command + arguments)
@@ -138,6 +142,18 @@ void _cmd_logPotentiometerVoltage(int argc, char *argv[])
     pend_logging_start(); 
     
 }
+
+void _cmd_logIMU(int argc, char *argv[])
+{
+    /* Supress compiler warnings for unused arguments */
+    UNUSED(argc);
+    UNUSED(argv);
+    // Begin the logging
+    logging_start();
+}
+
+
+
 
 // Command parser and dispatcher
 
