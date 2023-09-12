@@ -57,28 +57,46 @@ void ctrl_init(void)
 }
 
 
+/* Update state vector elements */
+void ctrl_set_x1(float x1)
+{
+  // Update state x1
+  ctrl_x_f32[0] = x1;
+}
 
-// /* Update state vector elements */
-// void ctrl_set_x1(float x1)
-// {
-//   // Update state x1
-//   ctrl_x_f32[0] = x1;
-// }
+void ctrl_set_x2(float x2)
+{
+  // Update state x2
+  ctrl_x_f32[1] = x2;
+}
 
-// void ctrl_set_x2(float x2)
-// {
-//   // Update state x2
-//   ctrl_x_f32[1] = x2;
-// }
+void ctrl_set_x3(float x3)
+{
+  // Update state x3
+  ctrl_x_f32[2] = x3;
+}
 
-// void ctrl_set_x3(float x3)
-// {
-//   // Update state x3
-//   ctrl_x_f32[2] = x3;
-// }
+void ctrl_set_x4(float x4)
+{
+  // Update state x4
+  ctrl_x_f32[3] = x4;
+}
 
-// void ctrl_set_x4(float x4)
-// {
-//   // Update state x4
-//   ctrl_x_f32[3] = x4;
-// }
+/* Get the current control output */
+float getControl(void)
+{
+    return ctrl_u_f32[0];
+}
+
+/* Update control output */
+void ctrl_update(void)
+{
+  // TODO: Compute control action 
+  arm_mat_mult_f32(&ctrl_mK, &ctrl_x, &ctrl_u);
+
+  // TODO: Update integrator state 
+  arm_mat_mult_f32(&ctrl_Az, &ctrl_z, &ctrl_z);
+
+  // Copy updated value of integrator state into state vector
+  ctrl_x_f32[4] = ctrl_z_f32[0];
+}
