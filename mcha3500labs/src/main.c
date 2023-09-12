@@ -10,6 +10,7 @@
 #include "pendulum.h"
 #include "motor.h"
 #include "data_logging.h"
+#include "IMU.h"
 
 static void SystemClock_Config(void);
 static void Error_Handler(void);
@@ -28,6 +29,7 @@ int main(void)
     motor_PWM_init();
     motor_encoder_init();
     logging_init();
+    IMU_init();
 
     // Initialise task modules
     heartbeat_task_init();

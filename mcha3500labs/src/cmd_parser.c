@@ -139,7 +139,7 @@ void _cmd_logPotentiometerVoltage(int argc, char *argv[])
     // suppress compiler warnings
     UNUSED(argc);
     
-    pend_logging_start(); 
+    logging_start(); 
     
 }
 

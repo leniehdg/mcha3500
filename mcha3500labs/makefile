@@ -24,6 +24,7 @@ STM32CUBE_ROOT = ../../libraries/STM32Cube_F4_FW
 CMSIS_ROOT = ../../libraries/CMSIS_5
 RTOS_ROOT = ../../libraries/CMSIS-FreeRTOS
 UNITY_ROOT = ../../libraries/Unity
+MPU6050LIB_ROOT = TM_MPU6050
 
 # List of build directories
 BUILD_DIR = build build/stm32f4_HAL build/FreeRTOS
@@ -44,10 +45,11 @@ SRC_STM = \
 	$(SRCDIR)/uart.c \
 	$(SRCDIR)/heartbeat_task.c \
 	$(SRCDIR)/heartbeat_cmd.c \
-	$(SRCDIR)/dummy_task.c
+	$(SRCDIR)/dummy_task.c \
 	$(SRCDIR)/pendulum.c \
 	$(SRCDIR)/motor.c \
-	$(SRCDIR)/data_logging.c
+	$(SRCDIR)/data_logging.c \
+	$(SRCDIR)/IMU.c
   
 SRC_MPU6050LIB = \
 	$(MPU6050LIB_ROOT)/tm_stm32_gpio.c \

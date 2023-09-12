@@ -63,18 +63,19 @@ void dummy_task_update(void *arg)
     UNUSED(arg);
     while(1)
     {
-        // TODO: Add print statements for motor and potentiometer
+        // // TODO: Add print statements for motor and potentiometer
         
-        int32_t enc_count = motor_encoder_getValue();
+        // int32_t enc_count = motor_encoder_getValue();
         
-        float voltage = pendulum_read_voltage();
+        // float voltage = pendulum_read_voltage();
         
-        float accY = get_accY();
+        // // Print IMU Y-acceleration
+        // float accY = get_accY();
         
-        printf("Voltage: %f  Encoder: %ld  Acceleration Y: %f\n", voltage, enc_count, accY);
+        // printf("Voltage: %f  Encoder: %ld  Acceleration Y: %f\n", voltage, enc_count, accY);
        
-        // Non-blocking delay to wait
-        osDelay(1000);
+        // // Non-blocking delay to wait
+        // osDelay(1000);
     }
 }
 
