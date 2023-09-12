@@ -1,4 +1,8 @@
 #include <stddef.h>
+
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "stm32f4xx_hal.h"
 #include "arm_math.h" /* Include STM32 DSP matrix libraries */
 #include "controller.h"
@@ -27,7 +31,7 @@ static float ctrl_u_f32[CTRL_N_INPUT] =
   /* control action, 1x1 */
   0.0,
 };
-static float ctrl_Az_f32[CTRL_N_STATE] =            // A_z = [C_r = [1 0 0 0]  *  T = 0.005 (200Hz)     1]
+static float ctrl_Az_f32[CTRL_N_STATE] =        // A_z = [C_r = [1 0 0 0]  *  T = 0.005 (200Hz)     1]
 {
   /* State transition matrix */
   0.0050, 0.0, 0.0, 0.0, 1.0

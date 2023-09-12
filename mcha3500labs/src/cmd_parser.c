@@ -22,12 +22,14 @@ static void _reset(int, char *[]);
 static void _cmd_getPotentiometerVoltage(int, char *[]);
 static void _cmd_logPotentiometerVoltage(int, char *[]);
 static void _cmd_logIMU(int, char *[]);
+static void _cmd_updateControl(int, char *[]);
 
 // Modules that provide commands
 #include "heartbeat_cmd.h"
 #include "pendulum.h"
 #include "data_logging.h"
 #include "IMU.h"
+#include "controller.h"
 
 // Command table
 static CMD_T cmd_table[] =
@@ -37,7 +39,8 @@ static CMD_T cmd_table[] =
     {heartbeat_cmd                     , "heartbeat"   , "[start|stop]"              , "Get status or start/stop heartbeat task"} ,
     {_cmd_getPotentiometerVoltage      , "getPot"      , ""                          , "Displays the potentiometer volt level"  } ,
     {_cmd_logPotentiometerVoltage      , "logPot"      , ""                          , "Logs the potentiometer volt level"      } ,
-    {_cmd_logIMU                       , "logIMU"      , ""                          , "Begins logging and displaying the IMU." } , 
+    {_cmd_logIMU                       , "logIMU"      , ""                          , "Begins logging and displaying the IMU." } ,
+    {_cmd_updateControl                , "getControl"  , "[x1 x2 x3 x4]"             , "Set first 4 values of state vector, increment controller and print control value" } , 
 
 };
 enum {CMD_TABLE_SIZE = sizeof(cmd_table)/sizeof(CMD_T)};
@@ -152,6 +155,37 @@ void _cmd_logIMU(int argc, char *argv[])
     logging_start();
 }
 
+
+static void _cmd_updateControl(int argc, char *argv[])
+{
+  // Check for correct input arguments
+  if (argc != 5)
+  {
+    printf("Incorrect arguments\n");
+  }
+  else
+  {
+    // Parse the command line arguments (assuming argv[0] is not needed)
+    float x1 = atof(argv[1]);
+    float x2 = atof(argv[2]);
+    float x3 = atof(argv[3]);
+    float x4 = atof(argv[4]);
+
+    // Update the state vector using ctrl_set_xi functions
+    ctrl_set_x1(x1);
+    ctrl_set_x2(x2);
+    ctrl_set_x3(x3);
+    ctrl_set_x4(x4);
+
+    // Update the controller value (implement this according to your system)
+    ctrl_update();
+
+    
+    // Get and print the control action
+    float control = getControl();
+    printf("%f\n", control);
+  }
+}
 
 
 
