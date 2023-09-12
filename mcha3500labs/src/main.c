@@ -31,6 +31,7 @@ int main(void)
     motor_encoder_init();
     logging_init();
     IMU_init();
+    ctrl_init();
 
     // Initialise task modules
     heartbeat_task_init();
