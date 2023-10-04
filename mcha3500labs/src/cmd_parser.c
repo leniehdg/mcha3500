@@ -6,6 +6,12 @@
 #include "stm32f4xx_hal.h" // to import UNUSED() macro
 #include "cmd_line_buffer.h"
 #include "cmd_parser.h"
+#include "data_logging.h"
+#include "IMU.h"
+#include "controller.h"
+#include "stepper.h"
+#include "encoder.h"
+#include "observer.h"
 
 // Type for each command table entry
 typedef struct
@@ -20,35 +26,82 @@ typedef struct
 static void _help(int, char *[]);
 static void _reset(int, char *[]);
 static void _cmd_getPotentiometerVoltage(int, char *[]);
-static void _cmd_logPotentiometerVoltage(int, char *[]);
-static void _cmd_logIMU(int, char *[]);
-static void _cmd_updateControl(int, char *[]);
+static void IMU_logging_start(int argc, char *argv[]);
+static void ENCDR_logging_start(int argc, char *argv[]);
+static void _cmd_updateControl(int argc, char *argv[]);
+static void set_stepper(int argc, char *argv[]);
+static void KFilter_logging_start(int argc, char *argv[]);
+static void _obs_update(int, char *[]);
 
 // Modules that provide commands
 #include "heartbeat_cmd.h"
-#include "pendulum.h"
-#include "data_logging.h"
-#include "IMU.h"
-#include "controller.h"
 
 // Command table
 static CMD_T cmd_table[] =
 {
-    {_help                             , "help"        , ""                          , "Displays this help message"             } ,
-    {_reset                            , "reset"       , ""                          , "Restarts the system."                   } ,
-    {heartbeat_cmd                     , "heartbeat"   , "[start|stop]"              , "Get status or start/stop heartbeat task"} ,
-    {_cmd_getPotentiometerVoltage      , "getPot"      , ""                          , "Displays the potentiometer volt level"  } ,
-    {_cmd_logPotentiometerVoltage      , "logPot"      , ""                          , "Logs the potentiometer volt level"      } ,
-    {_cmd_logIMU                       , "logIMU"      , ""                          , "Begins logging and displaying the IMU." } ,
-    {_cmd_updateControl                , "getControl"  , "[x1 x2 x3 x4]"             , "Set first 4 values of state vector, increment controller and print control value" } , 
-
-};
+    {_help              , "help"        , ""                             , "Displays this help message"                 },
+    {_reset             , "reset"       , ""                             , "Restarts the system."                       },
+    {heartbeat_cmd      , "heartbeat"   , "[start|stop]"                 , "Get status or start/stop heartbeat task"    },
+    {_cmd_getPotentiometerVoltage, "getPot", ""                          ,"Displays the potentiometer voltage level."   },
+    {IMU_logging_start,                "logIMU", ""                      ,"Logs the IMU information."                   },
+    {ENCDR_logging_start,                "logEncoder", ""                ,"Logs the encoder information."               },
+    {_cmd_updateControl,                "getControl", ""                 ,"Displays the Control information."           },
+    {set_stepper,                "setRevs", ""                           ,"Used to set the revs"                        },
+    {KFilter_logging_start,                "Kfilter", ""                           ,"returns value for Kfilter"         },
+    {_obs_update,                "obs_update", ""                           ,"Update Obs values"         },
+};  
 enum {CMD_TABLE_SIZE = sizeof(cmd_table)/sizeof(CMD_T)};
 enum {CMD_MAX_TOKENS = 5};      // Maximum number of tokens to process (command + arguments)
 
 // Command function definitions
 
 static void _print_chip_pinout(void);
+
+ void set_stepper(int argc,char *argv[]) // argc = amount, argv = values
+ {
+    UNUSED(argc);
+    set_motor_revs(atof(argv[1]));
+    //test
+ }
+
+void _obs_update(int argc, char *argv[])
+{
+    // if(argc != 5)
+    // {
+    //     printf("incorrect number of arguments");
+    // }
+    
+    
+        observer_set_u(atof(argv[1]));
+        observer_set_y1(atof(argv[2]));
+        observer_set_y2(atof(argv[3]));
+
+        observer_update();
+        observer_get_xh();
+        observer_get_ptheta();
+    
+}
+
+void KFilter_logging_start(int argc, char *argv[])
+{
+    UNUSED(argv);
+    UNUSED(argc);
+    kfilter_logging_start();
+}
+
+static void ENCDR_logging_start(int argc, char *argv[])
+{
+    UNUSED(argv);
+    UNUSED(argc);
+    encoder_logging_start();
+}
+
+void IMU_logging_start(int argc, char *argv[])
+{
+    UNUSED(argv);
+    UNUSED(argc);
+    imu_logging_start();
+}
 
 void _help(int argc, char *argv[])
 {
@@ -84,6 +137,40 @@ void _help(int argc, char *argv[])
     default:
         printf("help is expecting zero or one argument.\n\n");
     }
+}
+
+static void _cmd_updateControl(int argc, char *argv[])
+{
+    // Check for correct input arguments
+    if(argc != 3)
+    {
+    printf("Incorrect arguments\n");
+    }
+    else
+    {
+        // TODO: Update states using ctrl_set_xi functions 
+        ctrl_set_x1_int(atof(argv[1]));
+        ctrl_set_x2_int(atof(argv[2]));
+        //ctrl_set_x3(atof(argv[3]));
+       // ctrl_set_x4(atof(argv[4]));
+        // TODO: Update controller value 
+        ctrl_update();
+        // Print control action 
+        printf("%f\n", getControl());
+    }
+ } 
+
+void _cmd_getPotentiometerVoltage(int argc, char *argv[])
+{
+    /* TODO: Supress compiler warnings for unused arguments */
+    UNUSED(argc);
+    UNUSED(argv);
+
+    /* TODO: Read the potentiometer voltage */
+    // float voltage = pendulum_read_voltage();
+    // printf("The voltage is %f\n", voltage);
+
+    /* TODO: Print the voltage to the serial terminal */
 }
 
 void _reset(int argc, char *argv[])
@@ -123,71 +210,6 @@ void _print_chip_pinout(void)
         "                \\_________________/\n"
     );
 }
-
-void _cmd_getPotentiometerVoltage(int argc, char *argv[])
-{
-    // suppress compiler warnings
-    UNUSED(argc);
-    //UNUSED(argv);
-
-    // read pot voltage
-    float voltage = pendulum_read_voltage();
-
-    // print voltage to serial terminal
-    printf("Potentiometer voltage: %f\n", voltage);
-}
-
-void _cmd_logPotentiometerVoltage(int argc, char *argv[])
-{
-    // suppress compiler warnings
-    UNUSED(argc);
-    
-    logging_start(); 
-    
-}
-
-void _cmd_logIMU(int argc, char *argv[])
-{
-    /* Supress compiler warnings for unused arguments */
-    UNUSED(argc);
-    UNUSED(argv);
-    // Begin the logging
-    logging_start();
-}
-
-
-static void _cmd_updateControl(int argc, char *argv[])
-{
-  // Check for correct input arguments
-  if (argc != 5)
-  {
-    printf("Incorrect arguments\n");
-  }
-  else
-  {
-    // Parse the command line arguments (assuming argv[0] is not needed)
-    float x1 = atof(argv[1]);
-    float x2 = atof(argv[2]);
-    float x3 = atof(argv[3]);
-    float x4 = atof(argv[4]);
-
-    // Update the state vector using ctrl_set_xi functions
-    ctrl_set_x1(x1);
-    ctrl_set_x2(x2);
-    ctrl_set_x3(x3);
-    ctrl_set_x4(x4);
-
-    // Update the controller value (implement this according to your system)
-    ctrl_update();
-
-    
-    // Get and print the control action
-    float control = getControl();
-    printf("%f\n", control);
-  }
-}
-
-
 
 // Command parser and dispatcher
 

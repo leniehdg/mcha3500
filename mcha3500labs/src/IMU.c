@@ -1,81 +1,82 @@
-#include "IMU.h"
 #include "stm32f4xx_hal.h"
 #include "cmsis_os2.h"
 #include "uart.h"
-#include <stdint.h> 
+#include "IMU.h"
 #include "tm_stm32_mpu6050.h"
-#include <math.h>
+#include "math.h"
 
 #ifndef M_PI
-    #define M_PI 3.14159265358979323846
+#define M_PI 3.14159265358979323846
 #endif
 
 /* Variable declarations */
 TM_MPU6050_t IMU_datastruct;
+float accY;
+float accZ;
+float accX;
+float accAngle;
 
 /* Function defintions */
 void IMU_init(void)
 {
-    /* TODO: Initialise IMU with AD0 LOW, acceleration sensitivity +-4g, gyroscope +-250 deg/s */
-    
-    /* Initialise I2C communication */
-    
-    TM_I2C_Init(I2C1, TM_I2C_PinsPack_1, 400000);
-    TM_MPU6050_Init	(&IMU_datastruct, TM_MPU6050_Device_0, TM_MPU6050_Accelerometer_4G, TM_MPU6050_Gyroscope_250s);	
+    /* TODO: Initialise IMU with AD0 LOW, accelleration sensitivity +-4g, gyroscope +-250 deg/s */
+    TM_MPU6050_Init(&IMU_datastruct,TM_MPU6050_Device_0,TM_MPU6050_Accelerometer_4G,TM_MPU6050_Gyroscope_250s);
 }
 
- void IMU_read(void)
+void IMU_read(void)
 {
     /* TODO: Read all IMU values */
     TM_MPU6050_ReadAll(&IMU_datastruct);
+    //TM_MPU6050_ReadAccelerometer(&IMU_datastruct);
+}
+
+float get_accX(void)
+{
+    /* TODO: Convert accelleration reading to ms^-2. */
+    /* TODO: return the Y acceleration */
+    accX = IMU_datastruct.Accelerometer_X*4*9.81/32786;
+    return accX;
 }
 
 float get_accY(void)
 {
-    IMU_read();
-
-    /* TODO: Convert acceleration reading to ms^-2 */
-    float Y_acc = IMU_datastruct.Accelerometer_Y/8192.0;
-	Y_acc = Y_acc * 9.81;
-    
+    /* TODO: Convert accelleration reading to ms^-2. */
     /* TODO: return the Y acceleration */
-    return Y_acc;
+    accY = IMU_datastruct.Accelerometer_Y*4*9.81/32786;
+    return accY;
 }
 
 float get_accZ(void)
 {
-    IMU_read();
-
-    /* Convert acceleration reading to ms^-2 */
-    int16_t rawAccZ = IMU_datastruct.Accelerometer_Z;
-    float sensitivity = 8192.0; // ±4g sensitivity for ±32768 range
-    
-    float accZ_ms2 = (rawAccZ / sensitivity) * 9.81; // 9.81 m/s^2 is the acceleration due to gravity
-    
-    /* Return the Z acceleration */
-    return accZ_ms2;
+    /* TODO: return the Z acceleration */
+    accZ = IMU_datastruct.Accelerometer_Z*4*9.81/32786;
+    return accZ;
 }
 
 float get_gyroX(void)
 {
-    IMU_read();
-    
-    /* Convert gyro reading to radians per second */
-    int16_t rawGyroX = IMU_datastruct.Gyroscope_X;
-    float sensitivity = 131.0; // Sensitivity for ±250°/s range
-    float GyroX_rad = (rawGyroX / sensitivity) * (M_PI / 180.0); // Convert to radians/s
-    
-    /* Return the X angular velocity */
-    return GyroX_rad;
+    /* TODO: return the X angular velocity */
+    accX = IMU_datastruct.Gyroscope_X*(250*3.14159265358979323846)/(180*32786.0);
+    return accX;
+}
+
+///*******************//////////////////// Onboard baby ///*******************////////////////////
+
+
+float get_gyroZ(void)
+{
+    /* TODO: return the X angular velocity */
+    accZ = -IMU_datastruct.Gyroscope_Z*(250.0*3.14159265358979323846)/(180.0*32786.0);
+    //accZ = (IMU_datastruct.Gyroscope_Z/250.0)*((2.0*3.14159265358979323846)/180);
+    return accZ;
 }
 
 float get_acc_angle(void)
 {
-    float accY_ms2 = get_accY();
-    float accZ_ms2 = get_accZ();
-    /* Compute IMU angle using accY and accZ using atan2 */
-    float imu_angle = -atan2(accZ_ms2, accY_ms2);// (M_PI / 180.0);
+    /* TODO: compute IMU angle using accY and accZ using atan2 */
+    //accAngle = -atan2(get_accZ(),get_accY());
+    accAngle = -atan2(get_accX(),get_accY());
+    /* TODO: return the IMU angle */
 
-    /*  return the IMU angle*/
-    return imu_angle;
+    return accAngle;
 }

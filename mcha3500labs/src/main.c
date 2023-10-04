@@ -7,11 +7,14 @@
 #include "cmd_task.h"
 #include "heartbeat_task.h"
 #include "dummy_task.h"
-#include "pendulum.h"
-#include "motor.h"
+#include "encoder.h"
 #include "data_logging.h"
 #include "IMU.h"
 #include "controller.h"
+#include "stepper.h"
+#include "observer.h"
+#include "balance_dog.h"
+
 
 static void SystemClock_Config(void);
 static void Error_Handler(void);
@@ -26,17 +29,27 @@ int main(void)
 
     // Initialise hardware modules
     uart_init();
-    pendulum_init();
-    motor_PWM_init();
-    motor_encoder_init();
-    logging_init();
-    IMU_init();
-    ctrl_init();
+    //stepper_PWM_init();
+    stepper_PWM_init();
+    stepper_init();
+
+    
 
     // Initialise task modules
     heartbeat_task_init();
     cmd_task_init();
-    dummy_task_init();
+    //dummy_task_init();
+    //motor_encoder_init();
+    //HAL_Delay(1);
+    IMU_init();
+    logging_init();
+    ctrl_init();
+    
+    //
+    observer_init();
+    //ctrl_LQR_init();
+    balance_init();
+    
 
     // Start scheduler
     osKernelStart();
