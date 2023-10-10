@@ -8,20 +8,33 @@
 #include "data_logging.h"
 #include "IMU.h"
 #include "tm_stm32_mpu6050.h"
+#include "motor.h"              // ??????
+
 
 /* Variable declarations */
 uint16_t logCount;
+int32_t encoder_count = 0;
 osTimerId_t timerHandle; // Timer handle
 static void (*log_function) (void);
 
 /* Function declarations */
+// Basic Log Commands
+void logging_init(void);
+void logging_start(void)
+void logging_stop(void);
 static void log_pointer(void *argument);
+
+// Pendulum
 static void log_pendulum(void *argument);
-static void log_imu(void);
+
+// Encoder
+static void log_encoder(void);
+
+// IMU
+void log_imu(void);
 
 
-/* Function defintions */
-
+/* ------------------------------------  BASIC LOG COMMANDS  -------------------------- */
 
 void logging_init(void)
 {
@@ -42,6 +55,18 @@ static void log_pointer(void *argument)
     (*log_function)();
 }
 
+void logging_start(void)
+{
+    /* Reset the logCount variable */
+    logCount = 0;
+
+    /* function pointer to pend logging func */
+    log_function = &log_encoder;    //   &log_imu;    // &log_pendulum;
+
+    /* Start the data logging timer */
+    osStatus_t status = osTimerStart(timerHandle, 5); // 5 ms interval (timerPeriod)
+    
+}
 
 void logging_stop(void)
 {
@@ -50,8 +75,8 @@ void logging_stop(void)
     
 }
 
-/*      PENDULUM        */
 
+/* ------------------------------------  PENDULUM  -------------------------- */
 
 static void log_pendulum(void *argument)
 {
@@ -77,7 +102,7 @@ static void log_pendulum(void *argument)
 }   
 
 
-/*      IMU        */
+/* ------------------------------------  IMU  -------------------------- */
 
 
 static void log_imu(void)
@@ -107,16 +132,21 @@ static void log_imu(void)
 }
 
 
+/* ------------------------------------  ENCODER  -------------------------- */
 
-void logging_start(void)
+static void log_encoder(void)
 {
-    /* Reset the logCount variable */
-    logCount = 0;
+    // Read encoder data
+    int32_t encoder_count = motor_encoder_getValue();
 
-    /* function pointer to pend logging func */
-    log_function = &log_imu;    // &log_pendulum;
+    // Print encoder data
+    printf("%f, %ld\n", logCount, encoder_count);
 
-    /* Start the data logging timer */
-    osStatus_t status = osTimerStart(timerHandle, 5); // 5 ms interval
-    
+    /* TODO: Increment log count */
+    logCount++;
+    /* TODO: Stop logging once 5 seconds is reached */
+    if(logCount >=1000)
+    {
+        logging_stop();
+    }
 }
