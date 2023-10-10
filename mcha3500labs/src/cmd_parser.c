@@ -9,7 +9,7 @@
 #include "pendulum.h"
 #include "data_logging.h"
 #include "IMU.h"
-#include "motor.h"
+#include "encoder.h"
 
 
 // Type for each command table entry
@@ -36,13 +36,13 @@ static void ENCODER_logging(int, char *[]);
 // Command table
 static CMD_T cmd_table[] =
 {
-    {_help                       , "help"        , ""                          , "Displays this help message"             } ,
-    {_reset                      , "reset"       , ""                          , "Restarts the system."                   } ,
-    {heartbeat_cmd               , "heartbeat"   , "[start|stop]"              , "Get status or start/stop heartbeat task"} ,
+    {_help                       , "help"        , ""                          , "Displays this help message"               },
+    {_reset                      , "reset"       , ""                          , "Restarts the system."                     },
+    {heartbeat_cmd               , "heartbeat"   , "[start|stop]"              , "Get status or start/stop heartbeat task"  },
     {_cmd_getPotentiometerVoltage, "getPot"      , ""                          , "Displays the potentiometer voltage level."},
-    {dataLogging                 , "dataLog"      , ""                         , "Displays the potentiometer voltage level."},
-    {IMU_Logging                 , "logIMU"      , ""                           , "Displays the IMU values level.           "},
-    {ENCODER_logging                 , "logENCODER"      , ""                       , "Displays the Encoder value.           "},
+    {dataLogging                 , "dataLog"     , ""                          , "Displays the potentiometer voltage level."},
+    {IMU_Logging                 , "logIMU"      , ""                          , "Displays the IMU values level.           "},
+    {encoder_logging             , "logEncoder"  , ""                          , "Displays the Encoder value.              "},
 
 };
 enum {CMD_TABLE_SIZE = sizeof(cmd_table)/sizeof(CMD_T)};
@@ -58,7 +58,7 @@ void IMU_Logging(int argc, char *argv[])
 
 }
 
-void ENCODER_logging(int argc, char *argv[])
+void encoder_logging(int argc, char *argv[])
 {
   UNUSED(argv);
 
