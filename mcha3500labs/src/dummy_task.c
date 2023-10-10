@@ -6,7 +6,6 @@
 #include "cmsis_os2.h"
 #include "uart.h"
 #include "pendulum.h"
-#include "motor.h"
 #include "IMU.h"
 #include "tm_stm32_mpu6050.h"
 

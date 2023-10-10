@@ -8,7 +8,7 @@
 #include "heartbeat_task.h"
 #include "dummy_task.h"
 #include "pendulum.h"
-#include "motor.h"
+#include "encoder.h"
 #include "data_logging.h"
 #include "IMU.h"
 #include "controller.h"
@@ -28,12 +28,11 @@ int main(void)
     // Initialise hardware modules
     uart_init();
     pendulum_init();
-    motor_PWM_init();
+    // stepper_motor_PWM_init();
     motor_encoder_init();
     logging_init();
     IMU_init();
     ctrl_init();
-    stepper_motor_PWM_init();
 
     // Initialise task modules
     heartbeat_task_init();

@@ -7,9 +7,8 @@
 #include "pendulum.h"
 #include "data_logging.h"
 #include "IMU.h"
+#include "encoder.h"
 #include "tm_stm32_mpu6050.h"
-#include "motor.h"              // ??????
-
 
 /* Variable declarations */
 uint16_t logCount;
@@ -19,9 +18,6 @@ static void (*log_function) (void);
 
 /* Function declarations */
 // Basic Log Commands
-void logging_init(void);
-void logging_start(void)
-void logging_stop(void);
 static void log_pointer(void *argument);
 
 // Pendulum
@@ -30,8 +26,8 @@ static void log_pendulum(void *argument);
 // Encoder
 static void log_encoder(void);
 
-// IMU
-void log_imu(void);
+// IMU 
+static void log_imu(void);
 
 
 /* ------------------------------------  BASIC LOG COMMANDS  -------------------------- */
@@ -144,6 +140,7 @@ static void log_encoder(void)
 
     /* TODO: Increment log count */
     logCount++;
+    
     /* TODO: Stop logging once 5 seconds is reached */
     if(logCount >=1000)
     {
