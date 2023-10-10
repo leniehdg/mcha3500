@@ -50,6 +50,7 @@ SRC_STM = \
 	$(SRCDIR)/motor.c \
 	$(SRCDIR)/data_logging.c \
 	$(SRCDIR)/IMU.c \
+	$(SRCDIR)/stepper.c \
 	$(SRCDIR)/controller.c \
 	$(SRCDIR)/qpas_sub_noblas.c
 

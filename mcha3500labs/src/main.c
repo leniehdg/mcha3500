@@ -12,6 +12,7 @@
 #include "data_logging.h"
 #include "IMU.h"
 #include "controller.h"
+#include "stepper.h"
 
 static void SystemClock_Config(void);
 static void Error_Handler(void);
@@ -32,11 +33,13 @@ int main(void)
     logging_init();
     IMU_init();
     ctrl_init();
+    stepper_motor_PWM_init();
 
     // Initialise task modules
     heartbeat_task_init();
     cmd_task_init();
     dummy_task_init();
+    test_stepper_motor();
 
     // Start scheduler
     osKernelStart();
