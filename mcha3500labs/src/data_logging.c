@@ -11,8 +11,7 @@
 #include "tm_stm32_mpu6050.h"
 
 /* Variable declarations */
-uint16_t logCount;
-int32_t encoder_count = 0;
+float logCount;
 osTimerId_t timerHandle; // Timer handle
 static void (*log_function) (void);
 
@@ -55,6 +54,7 @@ void logging_start(void)
 {
     /* Reset the logCount variable */
     logCount = 0;
+    int32_t encoder_count = 0;
 
     /* function pointer to pend logging func */
     log_function = &log_encoder;    //   &log_imu;    // &log_pendulum;
