@@ -13,6 +13,7 @@
 #include "IMU.h"
 #include "controller.h"
 #include "stepper.h"
+#include "observer.h"
 
 static void SystemClock_Config(void);
 static void Error_Handler(void);
@@ -35,6 +36,8 @@ int main(void)
     logging_init();
     IMU_init();
     ctrl_init();
+    observer_init();
+
 
     // Initialise task modules
     cmd_task_init();

@@ -10,6 +10,7 @@
 #include "data_logging.h"
 #include "IMU.h"
 #include "encoder.h"
+#include "observer.h"
 
 
 // Type for each command table entry
@@ -28,6 +29,7 @@ static void _cmd_getPotentiometerVoltage(int, char *[]);
 static void dataLogging(int, char *[]);
 static void IMU_Logging(int, char *[]);
 static void encoder_logging(int, char *[]);
+void obs_update(int argc, char *argv[]);
 
 
 // Modules that provide commands
@@ -36,19 +38,41 @@ static void encoder_logging(int, char *[]);
 // Command table
 static CMD_T cmd_table[] =
 {
-    {_help                       , "help"        , ""                          , "Displays this help message"               },
-    {_reset                      , "reset"       , ""                          , "Restarts the system."                     },
-    {heartbeat_cmd               , "heartbeat"   , "[start|stop]"              , "Get status or start/stop heartbeat task"  },
-    {_cmd_getPotentiometerVoltage, "getPot"      , ""                          , "Displays the potentiometer voltage level."},
-    {dataLogging                 , "dataLog"     , ""                          , "Displays the potentiometer voltage level."},
-    {IMU_Logging                 , "logIMU"      , ""                          , "Displays the IMU values level.           "},
-    {encoder_logging             , "logEncoder"  , ""                          , "Displays the Encoder value.              "},
+    {_help                       , "help"        , ""                   , "Displays this help message"                           },
+    {_reset                      , "reset"       , ""                   , "Restarts the system."                                 },
+    {heartbeat_cmd               , "heartbeat"   , "[start|stop]"       , "Get status or start/stop heartbeat task"              },
+    {_cmd_getPotentiometerVoltage, "getPot"      , ""                   , "Displays the potentiometer voltage level."            },
+    {dataLogging                 , "dataLog"     , ""                   , "Displays the potentiometer voltage level."            },
+    {IMU_Logging                 , "logIMU"      , ""                   , "Displays the IMU values level.           "            },
+    {encoder_logging             , "logEncoder"  , ""                   , "Displays the Encoder value.              "            },
+    {obs_update                  , "updateOb"    , "yi"                 , "Displays the time,angle, angular velocity of observer"},
 
 };
 enum {CMD_TABLE_SIZE = sizeof(cmd_table)/sizeof(CMD_T)};
 enum {CMD_MAX_TOKENS = 5};      // Maximum number of tokens to process (command + arguments)
 
 // Command function definitions
+
+void obs_update (int argc, char *argv[])
+{
+    if (argc != 3)
+	{
+		printf("Incorrect number of arguments\n");
+	}
+
+	float yi = atof(argv[1]);
+	float yi2 = atof(argv[2]);
+	
+	observer_update(yi,yi2);
+	
+    // return the two states stored in xhm (predicted states after time step)
+    float x1h=get_obs_x1();
+	float x2h=get_obs_x2();
+
+    printf("%f, %f\n",x1h,x2h);
+
+}
+
 
 void IMU_Logging(int argc, char *argv[])
 {
