@@ -17,7 +17,6 @@ TM_MPU6050_t IMU_datastruct;
 void IMU_init(void)
 {
     /* TODO: Initialise IMU with AD0 LOW, acceleration sensitivity +-4g, gyroscope +-250 deg/s */
-    
     /* Initialise I2C communication */
     
     TM_I2C_Init(I2C1, TM_I2C_PinsPack_1, 400000);
@@ -30,16 +29,16 @@ void IMU_init(void)
     TM_MPU6050_ReadAll(&IMU_datastruct);
 }
 
-float get_accY(void)
+float get_accX(void)
 {
     IMU_read();
 
     /* TODO: Convert acceleration reading to ms^-2 */
-    float Y_acc = IMU_datastruct.Accelerometer_Y/8192.0;
-	Y_acc = Y_acc * 9.81;
+    float X_acc = IMU_datastruct.Accelerometer_X/8192.0;
+	X_acc = X_acc * 9.81;
     
     /* TODO: return the Y acceleration */
-    return Y_acc;
+    return X_acc;
 }
 
 float get_accZ(void)
@@ -56,25 +55,39 @@ float get_accZ(void)
     return accZ_ms2;
 }
 
-float get_gyroX(void)
+float get_gyroY(void)
 {
     IMU_read();
-    
+
     /* Convert gyro reading to radians per second */
-    int16_t rawGyroX = IMU_datastruct.Gyroscope_X;
+    int16_t rawGyroY = IMU_datastruct.Gyroscope_Y;
     float sensitivity = 131.0; // Sensitivity for ±250°/s range
-    float GyroX_rad = (rawGyroX / sensitivity) * (M_PI / 180.0); // Convert to radians/s
+    float GyroY_rad = (rawGyroY / sensitivity) * (M_PI / 180.0); // Convert to radians/s
     
     /* Return the X angular velocity */
-    return GyroX_rad;
+    return GyroY_rad;
 }
+
+
+// float get_gyroX(void)
+// {
+//     IMU_read();
+    
+//     /* Convert gyro reading to radians per second */
+//     int16_t rawGyroX = IMU_datastruct.Gyroscope_X;
+//     float sensitivity = 131.0; // Sensitivity for ±250°/s range
+//     float GyroX_rad = (rawGyroX / sensitivity) * (M_PI / 180.0); // Convert to radians/s
+    
+//     /* Return the X angular velocity */
+//     return GyroX_rad;
+// }
 
 float get_acc_angle(void)
 {
-    float accY_ms2 = get_accY();
     float accZ_ms2 = get_accZ();
+    float accX_ms2 = get_accX();
     /* Compute IMU angle using accY and accZ using atan2 */
-    float imu_angle = -atan2(accZ_ms2, accY_ms2);// (M_PI / 180.0);
+    float imu_angle = -atan2(accX_ms2, accZ_ms2);// (M_PI / 180.0);
 
     /*  return the IMU angle*/
     return imu_angle;

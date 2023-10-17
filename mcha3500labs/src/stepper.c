@@ -142,9 +142,9 @@ void stepper_motor_PWM_init(void) {
         0 1 0 Quarter
         1 1 0 Eighth
         0 0 1 Sixteenth
-        1 0 1 Thirtysecond
-        0 1 1 Thirtysecond
-        1 1 1 Thirtysecond
+        1 0 1 1/32
+        0 1 1 1/32
+        1 1 1 1/32
     For motor 1:
         STP: A6
         DIR: A0

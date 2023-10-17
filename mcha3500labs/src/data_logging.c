@@ -107,15 +107,15 @@ static void log_imu(void)
     float accelerometer_angle = get_acc_angle();
     
     /* Get the imu X gyro reading */
-    float gyro_angular_velocity = get_gyroX();
+    float gyro_angular_velocity = get_gyroY();
     
     /* Read the potentiometer voltage */
-    float voltage = pendulum_read_voltage();
+    int32_t encoder_count = motor_encoder_getValue();
     
     float time = logCount / 200.0;
 
     /* Print the time, accelerometer angle, gyro angular velocity, and pot voltage values */
-    printf("%.3f,%.3f,%.3f,%f\n", time, accelerometer_angle, gyro_angular_velocity, voltage);
+    printf("%.3f,%.3f,%.3f,%ld\n", time, accelerometer_angle, gyro_angular_velocity, encoder_count);
 
     /* Increment log count */
     logCount++;
@@ -136,7 +136,7 @@ static void log_encoder(void)
     int32_t encoder_count = motor_encoder_getValue();
 
     // Print encoder data
-    printf("%f, %ld\n", logCount, encoder_count);
+    printf("%f,%ld\n", logCount, encoder_count);
 
     /* TODO: Increment log count */
     logCount++;
