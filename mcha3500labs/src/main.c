@@ -28,16 +28,19 @@ int main(void)
     // Initialise hardware modules
     uart_init();
     heartbeat_task_init();
-    // stepper_motor_PWM_init();
-    motor_encoder_init();
-    logging_init();
+    stepper_motor_PWM_init();
+    stepper_init();             /// this is currently empty...
     IMU_init();
-    ctrl_init();
-    observer_init();
 
     // Initialise task modules
-    cmd_task_init();
-    
+    cmd_task_init();            /// go before IMU_init()???
+    logging_init();
+    ctrl_init();
+    observer_init();
+    balance_init();             /// to make Pud dance!
+    // test_stepper_motor();       /// to test motors spin!
+    // motor_encoder_init();       /// to log from rotary encoder
+
     // Start scheduler
     osKernelStart();
 
