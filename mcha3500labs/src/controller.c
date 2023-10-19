@@ -184,7 +184,6 @@ float getdtheta(void)
 // }
 
 
-/*  rename to wiggle    */
 // void do_the_balance(void)
 // {
 //     // Get states
