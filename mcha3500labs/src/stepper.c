@@ -35,6 +35,7 @@ float velocity;
 #define MS3_PIN GPIO_PIN_15
 #define MS_PORT GPIOB
 
+
 //------------------------------------------INIT FOR MOTOR PINS------------------------------------------//
 
 void stepper_motor_PWM_init(void) {
@@ -134,7 +135,9 @@ void stepper_motor_PWM_init(void) {
     HAL_GPIO_WritePin(MS_PORT, MS3_PIN, GPIO_PIN_RESET); // MS3 = 0
 }
 
+
 //------------------------------------------MICROSTEPPING DEFINE FUNCTIONS------------------------------------------//
+
 /*
     For driver DRV8825: MS1 MS2 MS3 Result
         0 0 0 Full
@@ -193,6 +196,7 @@ void Microstepping_SetThirtySecondStep(void) {
     HAL_GPIO_WritePin(MS_PORT, MS3_PIN, GPIO_PIN_SET);   // MS3 = 1
 }
 
+
 //------------------------------------------TEST FUNCTION------------------------------------------//
 
 void test_stepper_motor(void)
@@ -235,4 +239,82 @@ void test_stepper_motor(void)
     // HAL_GPIO_WritePin(MOTOR2_STP_PORT, MOTOR2_STP_PIN, GPIO_PIN_RESET);
 }
 
+
 //------------------------------------------MOTOR OPERATION FUNCTION------------------------------------------//
+
+void stepper_init(void)
+ {
+    // int motor = 2;
+    // revs = -2;
+    // printf("REVS %f\n",revs);
+    // set_motor_revs(revs);
+ }
+
+
+void set_motor_revs(float input)
+{
+    printf("REVS %f\n",input);
+    revs = input;
+     input = input / 6.2831853071796; //convert from rads to revs   
+     if (input <=0.05 && input > 0)
+     {
+        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_RESET);
+        //printf("Pin1");
+        HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_RESET);
+        velocity = 0.1*360*3.14159265359/180;
+        K = (200*2*3.14159265359)*32; //200 Steps per rev
+        prescaler = (1e7)/(velocity*K);
+         __HAL_TIM_SET_PRESCALER(&htim1, prescaler);
+         __HAL_TIM_SET_PRESCALER(&htim2, prescaler);
+         //printf("REVS %f\n",input);
+     }
+
+     if (input <=0 && input >= -0.05)
+     {
+        velocity = 0.1*360*3.14159265359/180;
+        K = (200*2*3.14159265359)*32; //200 Steps per rev
+        prescaler = (1e7)/(velocity*K);
+        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET);
+        HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_SET);
+         __HAL_TIM_SET_PRESCALER(&htim1, prescaler);
+         __HAL_TIM_SET_PRESCALER(&htim2, prescaler);
+         //printf("REVS %f\n",input);
+     }  
+     else if (input > 0.05) //if (input < 0.05 && input > -0.05)
+     {
+     velocity = input*360*3.14159265359/180;
+     K = (200*2*3.14159265359)*32; //200 Steps per rev
+     prescaler = (1e7)/(velocity*K);
+
+     //printf(" %f Prescalar \n", prescaler);
+     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_RESET);
+     //printf("Pin1");
+     HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_RESET);
+     //printf("Pin2");  
+     __HAL_TIM_SET_PRESCALER(&htim1, prescaler);
+     __HAL_TIM_SET_PRESCALER(&htim2, prescaler);
+     //printf("REVS %f\n",input);
+     }  
+     else if (input < -0.05)
+     {
+    input = -input;
+    velocity = input*360*3.14159265359/180;
+    K = (200*2*3.14159265359)*32; //200 Steps per rev
+    prescaler = (1e7)/(velocity*K);
+    
+    //printf(" %f Prescalar \n", prescaler);
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_SET);
+    
+    __HAL_TIM_SET_PRESCALER(&htim1, prescaler);
+    __HAL_TIM_SET_PRESCALER(&htim2, prescaler);
+    //printf("REVS %f\n",input);
+    }
+    
+    //printf("REVS %f\n",revs);
+}
+
+float get_motor_revs(void)
+{
+    return(revs);
+}
