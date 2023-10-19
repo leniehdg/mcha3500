@@ -6,14 +6,13 @@
 #include "uart.h"
 #include "cmd_task.h"
 #include "heartbeat_task.h"
-#include "dummy_task.h"
-#include "pendulum.h"
 #include "encoder.h"
 #include "data_logging.h"
 #include "IMU.h"
 #include "controller.h"
 #include "stepper.h"
 #include "observer.h"
+#include "balance_pud.h"
 
 static void SystemClock_Config(void);
 static void Error_Handler(void);
