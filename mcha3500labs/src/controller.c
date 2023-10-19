@@ -16,88 +16,92 @@
 float slew = 1;
 
 /* Define control matrix values */
+
 static float ctrl_mK_f32[CTRL_N_INPUT*CTRL_N_INT_STATE] = 
 {
-/* negative K, 1x5 */
-//57.4827, 162.0246,  49.4904,  26.5967,  29.8511,
-//3.07262805257052,	18.3391931397558,	4.39980123905778,	6.19934220125095,	0.644623127056843,
-//17.9262,   22.9257,   3.0783
-//83.3630, 389.6577,   3.0365,
-83.3630, 389.6577,   0.0365,
- //439.3727, 660.9861, 164.3937,
+    /* negative K, 1x3 */
+    49.4324773949592,	313.129377865418,	0.305182595279445,
 };
+
 static float ctrl_x_int_f32[CTRL_N_INT_STATE] =
 {
-/* estimate of state, 5x1 */
- 0.0,
- 0.0,
- 0.0,
- };
- static float ctrl_u_f32[CTRL_N_INPUT] =
- {
- /* control action, 1x1 */
- 0.0,
- };
+    /* estimate of state, 5x1 */
+    0.0,
+    0.0,
+    0.0,
+};
+
+static float ctrl_u_f32[CTRL_N_INPUT] =
+{
+    /* control action, 1x1 */
+    0.0,
+};
+
 static float ctrl_u_prev_f32[CTRL_N_INPUT] =
  {
- /* control action, 1x1 */
- 0.0,
+    /* control action, 1x1 */
+    0.0,
  };
- static float ctrl_Az_f32[CTRL_N_INT_STATE] =
- {
- /* State transition matrix */
- 0,	0,	1,
- };
- static float ctrl_z_f32[CTRL_N_INPUT] =
- {
- /* Integrator state */
- 0.0,
- };
- static float ctrl_Azmx_f32[CTRL_N_INPUT] =
- {
- /* Integrator state */
- 0.0,
- };
+ 
+static float ctrl_Az_f32[CTRL_N_INT_STATE] =
+{
+    /* State transition matrix */
+    0,	0,	1,
+};
+
+static float ctrl_z_f32[CTRL_N_INPUT] =
+{
+    /* Integrator state */
+    0.0,
+};
+
+static float ctrl_Azmx_f32[CTRL_N_INPUT] =
+{
+    /* Integrator state */
+    0.0,
+};
+
 static float ctrl_Bz_f32[CTRL_N_INPUT] =
- {
- /* Integrator state */
- 0.0050,
- };
- static float ctrl_Bzmu_f32[CTRL_N_INPUT] =
- {
- /* Integrator state */
- 0,
- };
+{
+    /* Integrator state */
+    0.0050,
+};
 
- /* Define control matrix variables */
- // rows, columns, data array
- arm_matrix_instance_f32 ctrl_mK = {CTRL_N_INPUT, CTRL_N_INT_STATE, (float32_t *)ctrl_mK_f32};
- arm_matrix_instance_f32 ctrl_x_int = {CTRL_N_INT_STATE, 1, (float32_t *)ctrl_x_int_f32};
- arm_matrix_instance_f32 ctrl_u = {CTRL_N_INPUT, 1, (float32_t *)ctrl_u_f32};
- arm_matrix_instance_f32 ctrl_Az = {1, CTRL_N_INT_STATE, (float32_t *)ctrl_Az_f32};
- arm_matrix_instance_f32 ctrl_z = {1, 1, (float32_t *)ctrl_z_f32};
- arm_matrix_instance_f32 ctrl_Azmx = {1, 1, (float32_t *)ctrl_Azmx_f32};
- arm_matrix_instance_f32 ctrl_Bz = {1, 1, (float32_t *)ctrl_Bz_f32};
-  arm_matrix_instance_f32 ctrl_Bzmu = {1, 1, (float32_t *)ctrl_Bzmu_f32};
- arm_matrix_instance_f32 ctrl_u_prev = {CTRL_N_INPUT, 1, (float32_t *)ctrl_u_prev_f32};
+static float ctrl_Bzmu_f32[CTRL_N_INPUT] =
+{
+    /* Integrator state */
+    0,
+};
+
+/* Define control matrix variables */
+// rows, columns, data array
+arm_matrix_instance_f32 ctrl_mK = {CTRL_N_INPUT, CTRL_N_INT_STATE, (float32_t *)ctrl_mK_f32};
+arm_matrix_instance_f32 ctrl_x_int = {CTRL_N_INT_STATE, 1, (float32_t *)ctrl_x_int_f32};
+arm_matrix_instance_f32 ctrl_u = {CTRL_N_INPUT, 1, (float32_t *)ctrl_u_f32};
+arm_matrix_instance_f32 ctrl_Az = {1, CTRL_N_INT_STATE, (float32_t *)ctrl_Az_f32};
+arm_matrix_instance_f32 ctrl_z = {1, 1, (float32_t *)ctrl_z_f32};
+arm_matrix_instance_f32 ctrl_Azmx = {1, 1, (float32_t *)ctrl_Azmx_f32};
+arm_matrix_instance_f32 ctrl_Bz = {1, 1, (float32_t *)ctrl_Bz_f32};
+arm_matrix_instance_f32 ctrl_Bzmu = {1, 1, (float32_t *)ctrl_Bzmu_f32};
+arm_matrix_instance_f32 ctrl_u_prev = {CTRL_N_INPUT, 1, (float32_t *)ctrl_u_prev_f32};
 
 
- /* Control functions */
- void ctrl_init(void)
- {
- arm_mat_init_f32(&ctrl_mK, CTRL_N_INPUT, CTRL_N_INT_STATE, (float32_t *)ctrl_mK_f32);
- arm_mat_init_f32(&ctrl_x_int, CTRL_N_INT_STATE, 1, (float32_t *)ctrl_x_int_f32);
- arm_mat_init_f32(&ctrl_u, CTRL_N_INPUT, 1, (float32_t *)ctrl_u_f32);
- arm_mat_init_f32(&ctrl_Az, 1, CTRL_N_INT_STATE, (float32_t *)ctrl_Az_f32);
- arm_mat_init_f32(&ctrl_z, 1, 1, (float32_t *)ctrl_z_f32);
- arm_mat_init_f32(&ctrl_Azmx, 1, 1, (float32_t *)ctrl_Azmx_f32);
- arm_mat_init_f32(&ctrl_Bz, 1, 1, (float32_t *)ctrl_Bz_f32);
- arm_mat_init_f32(&ctrl_Bzmu, 1, 1, (float32_t *)ctrl_Bzmu_f32);
- arm_mat_init_f32(&ctrl_u_prev, CTRL_N_INPUT, 1, (float32_t *)ctrl_u_prev_f32);
+/* Control functions */
+void ctrl_init(void)
+{
+arm_mat_init_f32(&ctrl_mK, CTRL_N_INPUT, CTRL_N_INT_STATE, (float32_t *)ctrl_mK_f32);
+arm_mat_init_f32(&ctrl_x_int, CTRL_N_INT_STATE, 1, (float32_t *)ctrl_x_int_f32);
+arm_mat_init_f32(&ctrl_u, CTRL_N_INPUT, 1, (float32_t *)ctrl_u_f32);
+arm_mat_init_f32(&ctrl_Az, 1, CTRL_N_INT_STATE, (float32_t *)ctrl_Az_f32);
+arm_mat_init_f32(&ctrl_z, 1, 1, (float32_t *)ctrl_z_f32);
+arm_mat_init_f32(&ctrl_Azmx, 1, 1, (float32_t *)ctrl_Azmx_f32);
+arm_mat_init_f32(&ctrl_Bz, 1, 1, (float32_t *)ctrl_Bz_f32);
+arm_mat_init_f32(&ctrl_Bzmu, 1, 1, (float32_t *)ctrl_Bzmu_f32);
+arm_mat_init_f32(&ctrl_u_prev, CTRL_N_INPUT, 1, (float32_t *)ctrl_u_prev_f32);
 }
 
 
- /* Update state vector elements */
+/* Update state vector elements */
 void ctrl_set_x1_int(float x1)
 {
 // Update state x1
@@ -117,10 +121,8 @@ void ctrl_update(void)
     // TODO: Compute control action
     arm_mat_mult_f32(&ctrl_mK, &ctrl_x_int, &ctrl_u);
     //printf("test");
-   
-    //if(fabs(ctrl_u_f32[0])<5)
-    
-     if(fabs(ctrl_u_f32[0]) > fabs(ctrl_u_prev_f32[0])+slew)
+       
+    if(fabs(ctrl_u_f32[0]) > fabs(ctrl_u_prev_f32[0])+slew)
      {
          if(ctrl_u_prev_f32[0]<ctrl_u_f32[0])
          {
@@ -173,10 +175,27 @@ float getdtheta(void)
 
 ///*******************//////////////////// Onboard baby ///*******************////////////////////
 
-void ctrl_set_x_int(void)
-{ 
- // Update state x2
- ctrl_x_int_f32[0] = observer_get_theta();
- ctrl_x_int_f32[1] = observer_get_ptheta();
-}
+// void ctrl_set_x_int(void)
+// { 
+//  // Update state x2
+//  ctrl_x_int_f32[0] = observer_get_theta();
+//  ctrl_x_int_f32[1] = observer_get_ptheta();
+// }
 
+
+/*  rename to wiggle    */
+// void do_the_balance(void)
+// {
+//     // Get states
+//     kalman_update_IMU();
+	
+//     float x1h = get_obs_x1();
+// 	float x2h = get_obs_x2();
+//     // Get control
+//     ctrl_update();
+//     float phi = getControl();
+    
+//     // Do control
+
+//     // Repeat
+// }

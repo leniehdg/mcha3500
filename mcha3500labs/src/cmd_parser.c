@@ -11,6 +11,7 @@
 #include "IMU.h"
 #include "encoder.h"
 #include "observer.h"
+#include "controller.h"
 
 
 // Type for each command table entry
@@ -30,6 +31,7 @@ static void dataLogging(int, char *[]);
 static void IMU_Logging(int, char *[]);
 static void encoder_logging(int, char *[]);
 void obs_update(int argc, char *argv[]);
+static void control_update(int, char *[]);
 
 
 // Modules that provide commands
@@ -41,17 +43,43 @@ static CMD_T cmd_table[] =
     {_help                       , "help"        , ""                   , "Displays this help message"                           },
     {_reset                      , "reset"       , ""                   , "Restarts the system."                                 },
     {heartbeat_cmd               , "heartbeat"   , "[start|stop]"       , "Get status or start/stop heartbeat task"              },
-    {_cmd_getPotentiometerVoltage, "getPot"      , ""                   , "Displays the potentiometer voltage level."            },
-    {dataLogging                 , "dataLog"     , ""                   , "Displays the potentiometer voltage level."            },
+    {dataLogging                 , "logData"     , ""                   , "Displays the potentiometer voltage level."            },
     {IMU_Logging                 , "logIMU"      , ""                   , "Displays the IMU values level.           "            },
     {encoder_logging             , "logEncoder"  , ""                   , "Displays the Encoder value.              "            },
-    {obs_update                  , "updateOb"    , "yi"                 , "Displays the time,angle, angular velocity of observer"},
+    {obs_update                  , "updateOb"    , "yi"                 , "Displays the angle and angular velocity of observer"  },
+    {control_update              , "updateCtrl"  , ""                   , "Gets control values"                                  }, 
 
 };
 enum {CMD_TABLE_SIZE = sizeof(cmd_table)/sizeof(CMD_T)};
 enum {CMD_MAX_TOKENS = 5};      // Maximum number of tokens to process (command + arguments)
 
 // Command function definitions
+
+static void control_update (int argc, char *argv[])
+{
+    // Check for correct input arguments
+    if (argc != 3)
+    {
+        printf("Incorrect arguments\n");
+    }
+    else
+    {
+        // Convert parsed strings into floats
+        float x1 = atof(argv[1]);
+        float x2 = atof(argv[2]);
+        
+        /* Update states using ctrl_set_xi functions */
+        ctrl_set_x1_int(x1);
+        ctrl_set_x2_int(x2);
+
+        /* Update controller value */
+        ctrl_update();
+
+        /* Print control action */
+        printf("%f\n", getControl());
+    }
+}
+
 
 void obs_update (int argc, char *argv[])
 {

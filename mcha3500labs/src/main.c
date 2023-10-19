@@ -29,8 +29,6 @@ int main(void)
     // Initialise hardware modules
     uart_init();
     heartbeat_task_init();
-
-    // pendulum_init();
     // stepper_motor_PWM_init();
     motor_encoder_init();
     logging_init();
@@ -38,12 +36,9 @@ int main(void)
     ctrl_init();
     observer_init();
 
-
     // Initialise task modules
     cmd_task_init();
-    // dummy_task_init();
-    // test_stepper_motor();
-
+    
     // Start scheduler
     osKernelStart();
 

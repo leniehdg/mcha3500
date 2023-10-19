@@ -3,12 +3,14 @@
 
 /* Add function prototypes here */
 void ctrl_init(void);
-void ctrl_set_x1(float x1);
-void ctrl_set_x2(float x2);
-void ctrl_set_x3(float x3);
-void ctrl_set_x4(float x4);
+void ctrl_set_x1_int(float x1);
+void ctrl_set_x2_int(float x2);
+float getdPtheta(void);
+float getdtheta(void);
 float getControl(void);
 void ctrl_update(void);
+void ctrl_set_x_int(void);
+
 
 #endif
 
