@@ -12,9 +12,9 @@
 
 static float32_t Kb_f32[6] =        // optimal kalman gain, called Kk in MATLAB script
 {
-	0.0936,    0.8225,
-    0.0210,    0.0332,
-   -0.0330,   -0.1892,
+	0.1304,    1.2434,
+	0.0343,    0.0836,
+   -0.1100,   -0.2654,
 };
 
 
@@ -111,6 +111,14 @@ void observer_update(float y_measure, float y_measure2)
 
 	// Prediction xm = Ad*xp;
 	arm_mat_mult_f32(&Ad,&xhp,&xhm);
+
+	/* 	SHOULD IT BE THIS?? 	*/
+	// Prediction xm = Ad*xp + Bd*u + Kb*yt;
+	arm_mat_mult_f32(&Ad, &xhp, &Adx);		/// not sure if xhp or xhm
+    arm_mat_mult_f32(&obs_Bd, &obs_u, &Bdu);
+    arm_mat_add_f32(&Adx, &Bdu, &Adx_Bdu);
+    arm_mat_mult_f32(&obs_C, &obs_AdxpBdu, &obs_yh);
+	arm_mat_add_f32(&Adx_Bdu, &xhp, &obs_xh);
 }
 
 
