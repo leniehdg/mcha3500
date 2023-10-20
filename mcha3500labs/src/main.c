@@ -33,12 +33,12 @@ int main(void)
 
     // Initialise task modules
     cmd_task_init();            /// go before IMU_init()???
-    logging_init();
     ctrl_init();
     observer_init();
     balance_init();             /// to make Pud dance!
     // test_stepper_motor();       /// to test motors spin!
     // motor_encoder_init();       /// to log from rotary encoder
+    // logging_init();
 
     // Start scheduler
     osKernelStart();

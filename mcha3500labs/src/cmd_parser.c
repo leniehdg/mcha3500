@@ -103,7 +103,7 @@ void IMU_Logging(int argc, char *argv[])
 {
     UNUSED(argv);
 
-    logging_start();
+    // logging_start();
 
 }
 
@@ -111,7 +111,7 @@ void encoder_logging(int argc, char *argv[])
 {
     UNUSED(argv);
 
-    logging_start();
+    // logging_start();
 
 }
 
@@ -119,7 +119,7 @@ void dataLogging(int argc, char *argv[])
 {
     UNUSED(argv);
 
-    logging_start();
+    // logging_start();
 
 }
 

@@ -58,8 +58,11 @@ void ctrl_start(void)
 
 static void balance_begin(void)
 {
-    if (logCount < 200)
+
+  if (logCount < 200)
   {
+    // IMU_read();
+    observer_set_y();
     observer_update();
     logCount++;
   }
@@ -67,7 +70,7 @@ static void balance_begin(void)
   else
   {  
     /*   IMU    */
-    IMU_read();
+    // IMU_read();
 
     /*  Observer   */
     observer_set_y();
@@ -76,13 +79,11 @@ static void balance_begin(void)
     /*  Controller  */
     ctrl_set_x_int();
     ctrl_update();
-    // ctrl_get_dPtheta();
-    // ctrl_get_dtheta();
-    printf("%f,%f\n",ctrl_get_dtheta(),ctrl_get_dPtheta());
+
+    // printf("%f,%f\n",ctrl_get_dtheta(),ctrl_get_dPtheta());
 
     /*  Magic   */
     float wiggle = getControl()*0.5;
-    //printf("CONTROL %f\n",rubbish);
     set_motor_revs(wiggle);
   }
 }
