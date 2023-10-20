@@ -6,8 +6,6 @@
 #include "stm32f4xx_hal.h" // to import UNUSED() macro
 #include "cmd_line_buffer.h"
 #include "cmd_parser.h"
-#include "pendulum.h"
-#include "data_logging.h"
 #include "IMU.h"
 #include "encoder.h"
 #include "observer.h"
@@ -26,7 +24,6 @@ typedef struct
 // Forward declaration for built-in commands
 static void _help(int, char *[]);
 static void _reset(int, char *[]);
-static void _cmd_getPotentiometerVoltage(int, char *[]);
 static void dataLogging(int, char *[]);
 static void IMU_Logging(int, char *[]);
 static void encoder_logging(int, char *[]);
@@ -126,17 +123,6 @@ void dataLogging(int argc, char *argv[])
 
 }
 
-void _cmd_getPotentiometerVoltage(int argc, char *argv[])
- {
- /* : Supress compiler warnings for unused arguments */
-  UNUSED(argv);
- /* : Read the potentiometer voltage */
-  float voltage = pendulum_read_voltage();
-
- /* : Print the voltage to the serial terminal */
- printf("%f\n", voltage);
-
- }
 
 static void _print_chip_pinout(void);
 

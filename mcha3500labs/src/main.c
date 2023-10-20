@@ -7,7 +7,6 @@
 #include "cmd_task.h"
 #include "heartbeat_task.h"
 #include "encoder.h"
-#include "data_logging.h"
 #include "IMU.h"
 #include "controller.h"
 #include "stepper.h"

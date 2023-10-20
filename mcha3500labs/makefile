@@ -47,7 +47,6 @@ SRC_STM = \
 	$(SRCDIR)/heartbeat_cmd.c \
 	$(SRCDIR)/encoder.c \
 	$(SRCDIR)/balance_pud.c \
-	$(SRCDIR)/data_logging.c \
 	$(SRCDIR)/IMU.c \
 	$(SRCDIR)/stepper.c \
 	$(SRCDIR)/observer.c \

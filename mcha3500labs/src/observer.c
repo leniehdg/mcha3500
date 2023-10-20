@@ -1,10 +1,9 @@
 #include "stm32f4xx_hal.h"
 #include "cmsis_os2.h"
 #include "heartbeat_task.h"
-#include "data_logging.h"
-#include "pendulum.h"
 #include "IMU.h"
 #include "observer.h"
+#include "stepper.h"
 #include "arm_math.h"
 #include <stdint.h>
 
@@ -101,12 +100,16 @@ void observer_init(void)
 void observer_set_y(void)
 {
     yi_f32[0] = get_acc_angle();
-    yi_f32[1] = get_gyroZ();
+    yi_f32[1] = get_gyroY();
 }
 
 
-void observer_update(float y_measure, float y_measure2)
+void observer_update()
 {
+	// yi_f32[0] = y_measure;	// get_acc_angle
+	// yi_f32[1] = y_measure2;	// get_gyroZ
+	// observer_set_y();
+	
 	// Correction xp = xm + Kb*(yi-C*xm);
 	arm_mat_mult_f32(&C,&xhm,&yhat);
 	arm_mat_sub_f32(&yi,&yhat,&ye);

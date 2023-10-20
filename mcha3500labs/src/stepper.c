@@ -11,8 +11,10 @@ static TIM_OC_InitTypeDef sConfigPWM1;
 static TIM_HandleTypeDef htim4;
 static TIM_OC_InitTypeDef sConfigPWM2;
 
-float revs;
 float velocity;
+float K;
+float prescaler;
+float revs;
 
 // Define GPIO Port and Pins for Motor 1 and Motor 2
 #define MOTOR1_STP_PIN GPIO_PIN_6
@@ -267,8 +269,8 @@ void set_motor_revs(float input)
         
         prescaler = (1e7) / (velocity * K);
         
-        __HAL_TIM_SET_PRESCALER(&htim1, prescaler);
-        __HAL_TIM_SET_PRESCALER(&htim2, prescaler);
+        __HAL_TIM_SET_PRESCALER(&htim3, prescaler);
+        __HAL_TIM_SET_PRESCALER(&htim4, prescaler);
     }
 
     if (input <= 0 && input >= -0.05)
@@ -280,7 +282,11 @@ void set_motor_revs(float input)
         HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET);
         HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_SET);
         //printf("REVS %f\n", input);
+
+        __HAL_TIM_SET_PRESCALER(&htim3, prescaler);
+        __HAL_TIM_SET_PRESCALER(&htim4, prescaler);
     }
+
     else if (input > 0.05)
     {
         /*  If the input is positive and greater than 0.05  */
@@ -293,10 +299,11 @@ void set_motor_revs(float input)
         //printf("Pin1");
         HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_RESET);
         //printf("Pin2");  
-        __HAL_TIM_SET_PRESCALER(&htim1, prescaler);
-        __HAL_TIM_SET_PRESCALER(&htim2, prescaler);
+        __HAL_TIM_SET_PRESCALER(&htim3, prescaler);
+        __HAL_TIM_SET_PRESCALER(&htim4, prescaler);
         //printf("REVS %f\n", input);
     }
+    
     else if (input < -0.05)
     {
         /*  If the input is negative and less than -0.05    */
@@ -309,8 +316,8 @@ void set_motor_revs(float input)
         HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET);
         HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_SET);
         
-        __HAL_TIM_SET_PRESCALER(&htim1, prescaler);
-        __HAL_TIM_SET_PRESCALER(&htim2, prescaler);
+        __HAL_TIM_SET_PRESCALER(&htim3, prescaler);
+        __HAL_TIM_SET_PRESCALER(&htim4, prescaler);
         //printf("REVS %f\n", input);
     }
 }

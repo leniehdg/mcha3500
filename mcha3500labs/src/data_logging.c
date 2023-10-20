@@ -4,8 +4,6 @@
 #include "uart.h"
 
 // Modules that provide commands
-#include "pendulum.h"
-#include "data_logging.h"
 #include "IMU.h"
 #include "encoder.h"
 #include "tm_stm32_mpu6050.h"
@@ -18,9 +16,6 @@ static void (*log_function) (void);
 /* Function declarations */
 // Basic Log Commands
 static void log_pointer(void *argument);
-
-// Pendulum
-static void log_pendulum(void *argument);
 
 // Encoder
 static void log_encoder(void);
@@ -70,32 +65,6 @@ void logging_stop(void)
     osStatus_t status = osTimerStop(timerHandle);
     
 }
-
-
-/* ------------------------------------  PENDULUM  -------------------------- */
-
-static void log_pendulum(void *argument)
-{
-    
-
-    /* TODO: Read the potentiometer voltage */
-    float voltage = pendulum_read_voltage();        
-    float time = logCount/200.0;
-
-    /* TODO: Print the sample time and potentiometer voltage to the serial terminal in the format [time],[
-    voltage] */
-    printf("%.4f, %f\n", time, voltage);        
-
-    /* TODO: Increment log count */
-    logCount++;
-
-    /* TODO: Stop logging once 2 seconds is reached  */
-    if (logCount >= 400) { // Assuming 5 ms interval, 400 intervals = 2000 ms (2 seconds)
-        logging_stop();
-    }
-    
-    //return time;
-}   
 
 
 /* ------------------------------------  IMU  -------------------------- */
