@@ -160,42 +160,25 @@ void ctrl_update(void)
  /* Get the current control output */
 float getControl(void)
 {
-    //printf("test%f\n",ctrl_u_f32[0]);
+    // printf("test u: %f\n",ctrl_u_f32[0]);
     return ctrl_u_f32[0];
 }
 
-float getdPtheta(void)
+float ctrl_get_dPtheta(void)
 {
     return ctrl_x_int_f32[1];
 }
 
-float getdtheta(void)
+float ctrl_get_dtheta(void)
 {
     return ctrl_x_int_f32[0];
 }
 
-///*******************//////////////////// Onboard baby ///*******************////////////////////
 
-// void ctrl_set_x_int(void)
-// { 
-//  // Update state x2
-//  ctrl_x_int_f32[0] = observer_get_theta();
-//  ctrl_x_int_f32[1] = observer_get_ptheta();
-// }
+void ctrl_set_x_int(void)
+{ 
+    // Update states [theta ; ptheta]
+    ctrl_x_int_f32[0] = observer_get_theta();
+    ctrl_x_int_f32[1] = observer_get_ptheta();
+}
 
-
-// void do_the_balance(void)
-// {
-//     // Get states
-//     kalman_update_IMU();
-	
-//     float x1h = get_obs_x1();
-// 	float x2h = get_obs_x2();
-//     // Get control
-//     ctrl_update();
-//     float phi = getControl();
-    
-//     // Do control
-
-//     // Repeat
-// }

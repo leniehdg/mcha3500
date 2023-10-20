@@ -94,10 +94,10 @@ void obs_update (int argc, char *argv[])
 	observer_update(yi,yi2);
 	
     // return the two states stored in xhm (predicted states after time step)
-    float x1h=get_obs_x1();
-	float x2h=get_obs_x2();
+    float x1h = observer_get_dtheta();
+	float x2h = observer_get_theta();
 
-    printf("%f, %f\n",x1h,x2h);
+    printf("dtheta: %f, theta: %f\n",x1h,x2h);
 
 }
 

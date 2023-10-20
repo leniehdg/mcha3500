@@ -98,11 +98,15 @@ void observer_init(void)
 }
 
 
+void observer_set_y(void)
+{
+    yi_f32[0] = get_acc_angle();
+    yi_f32[1] = get_gyroZ();
+}
+
+
 void observer_update(float y_measure, float y_measure2)
 {
-	yi_f32[0] = y_measure;
-	yi_f32[1] = y_measure2;
-
 	// Correction xp = xm + Kb*(yi-C*xm);
 	arm_mat_mult_f32(&C,&xhm,&yhat);
 	arm_mat_sub_f32(&yi,&yhat,&ye);
@@ -112,24 +116,51 @@ void observer_update(float y_measure, float y_measure2)
 	// Prediction xm = Ad*xp;
 	arm_mat_mult_f32(&Ad,&xhp,&xhm);
 
-	/* 	SHOULD IT BE THIS?? 	*/
-	// Prediction xm = Ad*xp + Bd*u + Kb*yt;
-	arm_mat_mult_f32(&Ad, &xhp, &Adx);		/// not sure if xhp or xhm
-    arm_mat_mult_f32(&obs_Bd, &obs_u, &Bdu);
-    arm_mat_add_f32(&Adx, &Bdu, &Adx_Bdu);
+	/* 	
+	
+	SHOULD IT BE THIS?? 	
+	//Predict Mesurement
+    arm_mat_mult_f32(&obs_Ad, &obs_xh, &obs_Adx);
+    arm_mat_mult_f32(&obs_Bd, &obs_u, &obs_Bdu);
+    arm_mat_add_f32(&obs_Adx, &obs_Bdu, &obs_AdxpBdu);
     arm_mat_mult_f32(&obs_C, &obs_AdxpBdu, &obs_yh);
-	arm_mat_add_f32(&Adx_Bdu, &xhp, &obs_xh);
+
+    //Compute update
+    arm_mat_sub_f32(&obs_y, &obs_yh, &obs_yt);
+    //printf("%f,%f\n", obs_yt_f32[0],obs_yt_f32[1]);
+    arm_mat_mult_f32(&obs_Kb, &obs_yt, &obs_Kyt);
+
+    //Update prediction
+    arm_mat_add_f32(&obs_AdxpBdu, &obs_Kyt, &obs_xh);
+    //printf("dtheta = %f theta = %f\n", obs_xh_f32[1],obs_xh_f32[0]);
+
+	*/
 }
 
 
 /* xhm = predicted state after time step  */
 
-float get_obs_x1(void)
+// IS DTHETA STATE 0 OR 1 ???
+
+float observer_get_theta(void)	// x2??
+{
+	return xhm_f32[1];
+}
+
+float observer_get_dtheta(void)	// x1??
 {
 	return xhm_f32[0];
 }
 
-float get_obs_x2(void)
+float observer_get_ptheta(void)
 {
-	return xhm_f32[1];
+	// GET THESE FROM CLASSBALANCINGROBOTFLOWLINEARISED
+    float A = 46.9783;
+    float B = 0.2900;
+
+	// ASSUMING DTHETA IS SECOND STATE (xhm_f32[1])
+    float ptheta = (xhm_f32[1] + get_motor_revs()*B) / A;   // dtheta/A + B + A*omega
+    //float ptheta = observer_get_dtheta()*0.04;
+    printf("ptheta = %f dtheta = %f\n", ptheta, xhm_f32[1]);
+    return ptheta;
 }

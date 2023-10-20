@@ -5,8 +5,8 @@
 void ctrl_init(void);
 void ctrl_set_x1_int(float x1);
 void ctrl_set_x2_int(float x2);
-float getdPtheta(void);
-float getdtheta(void);
+float ctrl_get_dPtheta(void);
+float ctrl_get_dtheta(void);
 float getControl(void);
 void ctrl_update(void);
 void ctrl_set_x_int(void);

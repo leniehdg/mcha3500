@@ -66,18 +66,19 @@ static void balance_begin(void)
 
   else
   {  
-    /*  Observer    */
+    /*   IMU    */
     IMU_read();
+
+    /*  Observer   */
     observer_set_y();
     observer_update();
 
     /*  Controller  */
     ctrl_set_x_int();
     ctrl_update();
-
-    //getdPtheta();
-    //getdtheta();
-    //printf("%f,%f\n",getdtheta(),getdPtheta());
+    // ctrl_get_dPtheta();
+    // ctrl_get_dtheta();
+    printf("%f,%f\n",ctrl_get_dtheta(),ctrl_get_dPtheta());
 
     /*  Magic   */
     float wiggle = getControl()*0.5;
