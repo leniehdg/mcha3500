@@ -73,7 +73,7 @@ static void control_update (int argc, char *argv[])
         ctrl_update();
 
         /* Print control action */
-        printf("%f\n", getControl());
+        // printf("%f\n", getControl());
     }
 }
 
@@ -94,7 +94,7 @@ void obs_update (int argc, char *argv[])
     float x1h = observer_get_dtheta();
 	float x2h = observer_get_theta();
 
-    printf("dtheta: %f, theta: %f\n",x1h,x2h);
+    // printf("dtheta: %f, theta: %f\n",x1h,x2h);
 
 }
 

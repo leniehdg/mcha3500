@@ -101,6 +101,7 @@ void observer_set_y(void)
 {
     yi_f32[0] = get_acc_angle();
     yi_f32[1] = get_gyroY();
+	printf("accel_angle: %f, vel: %f\n", yi_f32[0], yi_f32[1]);
 }
 
 
@@ -163,7 +164,7 @@ float observer_get_ptheta(void)
 
 	// ASSUMING DTHETA IS SECOND STATE (xhm_f32[1])
     float ptheta = (xhm_f32[1] + get_motor_revs()*B) / A;   // dtheta/A + B + A*omega
-    //float ptheta = observer_get_dtheta()*0.04;
-    printf("ptheta = %f dtheta = %f\n", ptheta, xhm_f32[1]);
+    // float ptheta = observer_get_dtheta()*0.04;
+    // printf("ptheta = %f dtheta = %f\n", ptheta, xhm_f32[1]);
     return ptheta;
 }
