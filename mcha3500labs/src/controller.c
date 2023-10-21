@@ -107,7 +107,7 @@ void ctrl_set_x1_int(float x1)
 {
     // Update state x1
     ctrl_x_int_f32[0] = x1;
-    printf("theta (rad): %f\n", ctrl_x_int_f32[0]);
+    // printf("theta (rad): %f\n", ctrl_x_int_f32[0]);
 
 }
 
@@ -115,7 +115,7 @@ void ctrl_set_x2_int(float x2)
 {
     // Update state x2
     ctrl_x_int_f32[1] = x2;
-    printf("dtheta: %f\n \n", ctrl_x_int_f32[1]);
+    // printf("dtheta: %f\n \n", ctrl_x_int_f32[1]);
 
 }
 
@@ -123,48 +123,53 @@ void ctrl_set_x2_int(float x2)
 /* Update control output */
 void ctrl_update(void)
 {
-    // TODO: Compute control action
-    arm_mat_mult_f32(&ctrl_mK, &ctrl_x_int, &ctrl_u);
-    //printf("test");
-       
-    if(fabs(ctrl_u_f32[0]) > fabs(ctrl_u_prev_f32[0])+slew)
-     {
-         if(ctrl_u_prev_f32[0]<ctrl_u_f32[0])
-         {
-             ctrl_u_f32[0] = ctrl_u_prev_f32[0] + slew;
-         }
-         if(ctrl_u_prev_f32[0]>ctrl_u_f32[0])
-         {
-             ctrl_u_f32[0] = ctrl_u_prev_f32[0] - slew;
-         }
-     }
-    else if(fabs(ctrl_u_f32[0]) < fabs(ctrl_u_prev_f32[0])-slew)
-     {
-         if(ctrl_u_prev_f32[0]<ctrl_u_f32[0])
-         {
-             ctrl_u_f32[0] = ctrl_u_prev_f32[0] + slew;
-         }
-         if(ctrl_u_prev_f32[0]>ctrl_u_f32[0])
-         {
-             ctrl_u_f32[0] = ctrl_u_prev_f32[0] - slew;
-         }
-     }
-    
-     ctrl_u_prev_f32[0] = ctrl_u_f32[0];
+    /*      Compute control action      */   
+    arm_mat_mult_f32(&ctrl_mK, &ctrl_x_int, &ctrl_u);   // u = -K*x
 
-    // TODO: Update integrator state
-    arm_mat_mult_f32(&ctrl_Az, &ctrl_x_int, &ctrl_Azmx);
-    arm_mat_mult_f32(&ctrl_Bz, &ctrl_u, &ctrl_Bzmu);
-    arm_mat_add_f32(&ctrl_Azmx, &ctrl_Bzmu, &ctrl_z);
+    /*      Limit the control action using a slew       */   
+
+    if(fabs(ctrl_u_f32[0]) > fabs(ctrl_u_prev_f32[0])+slew)
+    {
+        if(ctrl_u_prev_f32[0]<ctrl_u_f32[0])
+        {
+            ctrl_u_f32[0] = ctrl_u_prev_f32[0] + slew;
+        }
+        if(ctrl_u_prev_f32[0]>ctrl_u_f32[0])
+        {
+            ctrl_u_f32[0] = ctrl_u_prev_f32[0] - slew;
+        }
+    }
+    else if(fabs(ctrl_u_f32[0]) < fabs(ctrl_u_prev_f32[0])-slew)
+    {
+        if(ctrl_u_prev_f32[0]<ctrl_u_f32[0])
+        {
+            ctrl_u_f32[0] = ctrl_u_prev_f32[0] + slew;
+        }
+        if(ctrl_u_prev_f32[0]>ctrl_u_f32[0])
+        {
+            ctrl_u_f32[0] = ctrl_u_prev_f32[0] - slew;
+        }
+    }
+
+    ctrl_u_prev_f32[0] = ctrl_u_f32[0];
+    printf("Control action with slew (u) %f\n", ctrl_u_f32[0]);
+
+
+    /*      Update integrator state     */
+
+    arm_mat_mult_f32(&ctrl_Az, &ctrl_x_int, &ctrl_Azmx);    // Az*x
+    arm_mat_mult_f32(&ctrl_Bz, &ctrl_u, &ctrl_Bzmu);        // Bz*u
+    arm_mat_add_f32(&ctrl_Azmx, &ctrl_Bzmu, &ctrl_z);       // z = Az*x + Bz*u
+    
     // Copy updated value of integrator state into state vector
     ctrl_x_int_f32[2] = ctrl_z_f32[0];
+    // printf("Integrator state: %f\n\n", ctrl_x_int_f32[2]);
 
 }
 
- /* Get the current control output */
+/* Get the current control output */
 float getControl(void)
 {
-    // printf("test u: %f\n",ctrl_u_f32[0]);
     return ctrl_u_f32[0];
 }
 

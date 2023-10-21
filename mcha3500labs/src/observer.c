@@ -123,7 +123,7 @@ void observer_update()
     yi_f32[0] = get_acc_angle();	
     yi_f32[1] = get_gyroY();
 
-	// printf("IMU --> accel_angle: %f, vel: %f\n", yi_f32[0], yi_f32[1]);
+	printf("IMU --> accel_angle: %f, vel: %f\n", yi_f32[0], yi_f32[1]);
 
 
     /* Kalman filter update steps	*/
@@ -139,7 +139,7 @@ void observer_update()
     // 5. Update the estimated state xhm = Ad * xhp
     arm_mat_mult_f32(&Ad, &xhp, &xhm);
 
-    // printf("OBS --> dtheta = %f theta = %f\n", xhm_f32[1], xhm_f32[0]);
+    printf("OBS --> theta = %f dtheta = %f\n", xhm_f32[0], xhm_f32[1]);
 
 	/* 	
 	
@@ -165,14 +165,14 @@ void observer_update()
 
 /* xhm = predicted state after time step  */
 
-float observer_get_theta(void)	// x2
-{
-	return xhm_f32[1];
-}
-
-float observer_get_dtheta(void)	// x1
+float observer_get_theta(void)	// x1
 {
 	return xhm_f32[0];
+}
+
+float observer_get_dtheta(void)	// x2
+{
+	return xhm_f32[1];
 }
 
 float observer_get_ptheta(float dtheta)

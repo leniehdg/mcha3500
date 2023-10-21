@@ -84,10 +84,9 @@ static void balance_begin(void)
     // 2. Send states
     ctrl_set_x1_int(theta);  
     ctrl_set_x2_int(dtheta);
-    // // 3. Get control
-    // ctrl_update();
-    // printf("%f,%f\n",ctrl_get_dtheta(),ctrl_get_dPtheta());
-    // float wiggle = getControl()*4;
+    // 3. Get control
+    ctrl_update();
+    // float wiggle = getControl();
     // printf("Control output %f\n", wiggle);
 
 
