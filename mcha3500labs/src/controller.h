@@ -9,7 +9,6 @@ float ctrl_get_dPtheta(void);
 float ctrl_get_dtheta(void);
 float getControl(void);
 void ctrl_update(void);
-void ctrl_set_x_int(void);
 
 
 #endif

@@ -59,7 +59,7 @@ void ctrl_start(void)
 static void balance_begin(void)
 {
 
-  if (logCount < 200)
+  if (logCount < 400)
   {
 
     observer_update();
@@ -73,23 +73,23 @@ static void balance_begin(void)
     /*      OBSERVER       */
     // 1. Get states
     observer_update();
-    float dtheta = observer_get_dtheta();
     float theta = observer_get_theta();
+    float dtheta = observer_get_dtheta();
     // printf("theta (deg): %f, dtheta: %f\n",theta*180/3.1415, dtheta);
     float ptheta = observer_get_ptheta(dtheta);
     // printf("ptheta: %f\n",ptheta);
 
 
-    printf("\n \n \nOnto Controller yewwww \n \n \n");
-
-    // /*      CONTROLLER     */
-    // // 2. Send states
-    // ctrl_set_x_int();   
+    /*      CONTROLLER     */
+    // 2. Send states
+    ctrl_set_x1_int(theta);  
+    ctrl_set_x2_int(dtheta);
     // // 3. Get control
     // ctrl_update();
     // printf("%f,%f\n",ctrl_get_dtheta(),ctrl_get_dPtheta());
     // float wiggle = getControl()*4;
     // printf("Control output %f\n", wiggle);
+
 
     // /*      MAGIC         */
     // // 4. Do control

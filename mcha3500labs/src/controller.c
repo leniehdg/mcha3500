@@ -105,14 +105,18 @@ arm_mat_init_f32(&ctrl_u_prev, CTRL_N_INPUT, 1, (float32_t *)ctrl_u_prev_f32);
 /* Update state vector elements */
 void ctrl_set_x1_int(float x1)
 {
-// Update state x1
-ctrl_x_int_f32[0] = x1;
+    // Update state x1
+    ctrl_x_int_f32[0] = x1;
+    printf("theta (rad): %f\n", ctrl_x_int_f32[0]);
+
 }
 
 void ctrl_set_x2_int(float x2)
 {
- // Update state x2
- ctrl_x_int_f32[1] = x2;
+    // Update state x2
+    ctrl_x_int_f32[1] = x2;
+    printf("dtheta: %f\n \n", ctrl_x_int_f32[1]);
+
 }
 
 
@@ -172,13 +176,5 @@ float ctrl_get_dPtheta(void)
 float ctrl_get_dtheta(void)
 {
     return ctrl_x_int_f32[0];
-}
-
-
-void ctrl_set_x_int(void)
-{ 
-    // Update states [theta ; ptheta]
-    ctrl_x_int_f32[0] = observer_get_theta();
-    // ctrl_x_int_f32[1] = observer_get_ptheta();
 }
 
