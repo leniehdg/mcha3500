@@ -9,20 +9,29 @@
 
 #define HEARTBEATPERIOD 1000
 
-static float32_t Kb_f32[6] =        // optimal kalman gain, called Kk in MATLAB script
+// INITIALISE from MATLAB
+static float32_t Kb_f32[6] =        // optimal kalman gain, last Kk value in Kalman_script.m
 {
 	0.1304,    1.2434,
 	0.0343,    0.0836,
    -0.1100,   -0.2654,
 };
 
-
+// INITIALISE from MATLAB 
 static float32_t yi_f32[2] =
 {
-	0,   
-	0
+	// 0,   
+	// 0
+
+	// tom's:
+	// -0.3450,
+	// -0.4560
+
+	0.2910,
+   -0.3670
 };
 
+// INITIALISE from MATLAB
 static float32_t C_f32[6] =
 {
 	0.0,   1.0, 0.0,
@@ -37,11 +46,21 @@ static float32_t xhm_f32[3] =
     0.0,  
 };
 
+// INITIALISE from MATLAB 
 static float32_t xhp_f32[3] =
 {
-	0.0,  
-    0.0, 
-    0.0,  
+	// 0.0,  
+    // 0.0, 
+    // 0.0,  
+
+	// tom's:
+	// -0.452101973764415,
+	// -0.362912589510825,
+	// -0.00371741272527977,
+
+	-0.3911,
+    0.2301,
+    0.0260,
 };
 
 static float32_t Ad_f32[9] =
@@ -97,32 +116,34 @@ void observer_init(void)
 }
 
 
-void observer_set_y(void)
-{
-    yi_f32[0] = get_acc_angle();
-    yi_f32[1] = get_gyroY();
-	printf("accel_angle: %f, vel: %f\n", yi_f32[0], yi_f32[1]);
-}
-
-
 void observer_update()
 {
-	// yi_f32[0] = y_measure;	// get_acc_angle
-	// yi_f32[1] = y_measure2;	// get_gyroZ
-	// observer_set_y();
-	
-	// Correction xp = xm + Kb*(yi-C*xm);
-	arm_mat_mult_f32(&C,&xhm,&yhat);
-	arm_mat_sub_f32(&yi,&yhat,&ye);
-	arm_mat_mult_f32(&Kb,&ye,&Kbye);
-	arm_mat_add_f32(&xhm,&Kbye,&xhp);
+	/*	Set y	*/
 
-	// Prediction xm = Ad*xp;
-	arm_mat_mult_f32(&Ad,&xhp,&xhm);
+    yi_f32[0] = get_acc_angle();	
+    yi_f32[1] = get_gyroY();
+
+	// printf("IMU --> accel_angle: %f, vel: %f\n", yi_f32[0], yi_f32[1]);
+
+
+    /* Kalman filter update steps	*/
+
+    // 1. Calculate estimated measurement yhat = C * xhm
+    arm_mat_mult_f32(&C, &xhm, &yhat);
+    // 2. Calculate measurement error ye = yi - yhat
+    arm_mat_sub_f32(&yi, &yhat, &ye);
+    // 3. Calculate the Kalman gain correction Kbye = Kb * ye
+    arm_mat_mult_f32(&Kb, &ye, &Kbye);
+    // 4. Update the predicted state xhp = xhm + Kbye
+    arm_mat_add_f32(&xhm, &Kbye, &xhp);
+    // 5. Update the estimated state xhm = Ad * xhp
+    arm_mat_mult_f32(&Ad, &xhp, &xhm);
+
+    // printf("OBS --> dtheta = %f theta = %f\n", xhm_f32[1], xhm_f32[0]);
 
 	/* 	
 	
-	SHOULD IT BE THIS?? 	
+	PROGRESS TO THIS?? 	
 	//Predict Mesurement
     arm_mat_mult_f32(&obs_Ad, &obs_xh, &obs_Adx);
     arm_mat_mult_f32(&obs_Bd, &obs_u, &obs_Bdu);
@@ -136,7 +157,7 @@ void observer_update()
 
     //Update prediction
     arm_mat_add_f32(&obs_AdxpBdu, &obs_Kyt, &obs_xh);
-    //printf("dtheta = %f theta = %f\n", obs_xh_f32[1],obs_xh_f32[0]);
+    printf("dtheta = %f theta = %f\n", obs_xh_f32[1],obs_xh_f32[0]);
 
 	*/
 }
@@ -144,27 +165,26 @@ void observer_update()
 
 /* xhm = predicted state after time step  */
 
-// IS DTHETA STATE 0 OR 1 ???
-
-float observer_get_theta(void)	// x2??
+float observer_get_theta(void)	// x2
 {
 	return xhm_f32[1];
 }
 
-float observer_get_dtheta(void)	// x1??
+float observer_get_dtheta(void)	// x1
 {
 	return xhm_f32[0];
 }
 
-float observer_get_ptheta(void)
+float observer_get_ptheta(float dtheta)
 {
-	// GET THESE FROM CLASSBALANCINGROBOTFLOWLINEARISED
+	// GET THESE FROM MATLAB CLASSBALANCINGROBOTFLOWLINEARISED
     float A = 46.9783;
     float B = 0.2900;
 
+    float omega = get_motor_revs();
+
 	// ASSUMING DTHETA IS SECOND STATE (xhm_f32[1])
-    float ptheta = (xhm_f32[1] + get_motor_revs()*B) / A;   // dtheta/A + B + A*omega
-    // float ptheta = observer_get_dtheta()*0.04;
-    // printf("ptheta = %f dtheta = %f\n", ptheta, xhm_f32[1]);
+    float ptheta = (dtheta + omega*B) / A;   // dtheta/A + B + A*omega
+
     return ptheta;
 }

@@ -88,7 +88,7 @@ void obs_update (int argc, char *argv[])
 	float yi = atof(argv[1]);
 	float yi2 = atof(argv[2]);
 	
-	observer_update(yi,yi2);
+	// observer_update(yi,yi2);
 	
     // return the two states stored in xhm (predicted states after time step)
     float x1h = observer_get_dtheta();

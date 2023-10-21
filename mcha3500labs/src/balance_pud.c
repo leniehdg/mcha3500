@@ -15,7 +15,7 @@
 
 static osTimerId_t controlLoop;
 
-uint16_t logCount;
+float logCount;
 
 static void (*ctrl_function)(void);
 
@@ -52,7 +52,7 @@ void ctrl_start(void)
     logCount = 0;
 
     /* Start data logging timer at 200Hz */
-    osTimerStart(controlLoop,5);
+    osTimerStart(controlLoop,5);    // 5 milliseconds
 }
 
 
@@ -61,30 +61,40 @@ static void balance_begin(void)
 
   if (logCount < 200)
   {
-    // IMU_read();
-    observer_set_y();
+
     observer_update();
     logCount++;
+    
   }
 
   else
   {  
-    /*   IMU    */
-    // IMU_read();
 
-    /*  Observer   */
-    observer_set_y();
+    /*      OBSERVER       */
+    // 1. Get states
     observer_update();
+    float dtheta = observer_get_dtheta();
+    float theta = observer_get_theta();
+    // printf("theta (deg): %f, dtheta: %f\n",theta*180/3.1415, dtheta);
+    float ptheta = observer_get_ptheta(dtheta);
+    // printf("ptheta: %f\n",ptheta);
 
-    /*  Controller  */
-    ctrl_set_x_int();
-    ctrl_update();
 
+    printf("\n \n \nOnto Controller yewwww \n \n \n");
+
+    // /*      CONTROLLER     */
+    // // 2. Send states
+    // ctrl_set_x_int();   
+    // // 3. Get control
+    // ctrl_update();
     // printf("%f,%f\n",ctrl_get_dtheta(),ctrl_get_dPtheta());
+    // float wiggle = getControl()*4;
+    // printf("Control output %f\n", wiggle);
 
-    /*  Magic   */
-    float wiggle = getControl()*0.5;
-    set_motor_revs(wiggle);
+    // /*      MAGIC         */
+    // // 4. Do control
+    // set_motor_revs(wiggle);
+
   }
 }
  

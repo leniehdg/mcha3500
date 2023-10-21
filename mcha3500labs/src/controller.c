@@ -179,6 +179,6 @@ void ctrl_set_x_int(void)
 { 
     // Update states [theta ; ptheta]
     ctrl_x_int_f32[0] = observer_get_theta();
-    ctrl_x_int_f32[1] = observer_get_ptheta();
+    // ctrl_x_int_f32[1] = observer_get_ptheta();
 }
 
