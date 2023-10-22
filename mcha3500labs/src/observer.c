@@ -20,22 +20,23 @@ static float32_t Kb_f32[6] =        // optimal kalman gain, last Kk value in Kal
 // INITIALISE from MATLAB 
 static float32_t yi_f32[2] =
 {
-	// 0,   
-	// 0
+	0,   
+	0
 
 	// tom's:
 	// -0.3450,
 	// -0.4560
 
-	0.2910,
-   -0.3670
+	// // mine:
+	//  0.2910,
+    // -0.3670
 };
 
 // INITIALISE from MATLAB
 static float32_t C_f32[6] =
 {
-	0.0,   1.0, 0.0,
-    1.0,   0.0, 1.0,
+	0.0,   1.0,   0.0,
+    1.0,   0.0,   1.0,
 };
 
 
@@ -49,18 +50,19 @@ static float32_t xhm_f32[3] =
 // INITIALISE from MATLAB 
 static float32_t xhp_f32[3] =
 {
-	// 0.0,  
-    // 0.0, 
-    // 0.0,  
+	0.0,  
+    0.0, 
+    0.0,  
 
 	// tom's:
 	// -0.452101973764415,
 	// -0.362912589510825,
 	// -0.00371741272527977,
 
-	-0.3911,
-    0.2301,
-    0.0260,
+	// // mine:
+	// -0.3911,
+    // 0.2301,
+    // 0.0260,
 };
 
 static float32_t Ad_f32[9] =
@@ -123,7 +125,7 @@ void observer_update()
     yi_f32[0] = get_acc_angle();	
     yi_f32[1] = get_gyroY();
 
-	printf("IMU --> accel_angle: %f, vel: %f\n", yi_f32[0], yi_f32[1]);
+	// printf("IMU --> accel_angle: %f, vel: %f\n", yi_f32[0], yi_f32[1]);
 
 
     /* Kalman filter update steps	*/
@@ -139,7 +141,7 @@ void observer_update()
     // 5. Update the estimated state xhm = Ad * xhp
     arm_mat_mult_f32(&Ad, &xhp, &xhm);
 
-    printf("OBS --> theta = %f dtheta = %f\n", xhm_f32[0], xhm_f32[1]);
+    // printf("OBS --> theta = %f dtheta = %f\n", xhm_f32[0], xhm_f32[1]);
 
 	/* 	
 	

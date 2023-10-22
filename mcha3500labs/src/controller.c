@@ -167,10 +167,20 @@ void ctrl_update(void)
 
 }
 
-/* Get the current control output */
+
+/*      Get the current control output      */
+
 float getControl(void)
 {
     return ctrl_u_f32[0];
+}
+
+
+/*      Get current states      */
+
+float ctrl_get_dtheta(void)
+{
+    return ctrl_x_int_f32[0];
 }
 
 float ctrl_get_dPtheta(void)
@@ -178,8 +188,4 @@ float ctrl_get_dPtheta(void)
     return ctrl_x_int_f32[1];
 }
 
-float ctrl_get_dtheta(void)
-{
-    return ctrl_x_int_f32[0];
-}
 
