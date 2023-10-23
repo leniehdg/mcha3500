@@ -28,7 +28,6 @@ int main(void)
     uart_init();
     heartbeat_task_init();
     stepper_motor_PWM_init();
-    stepper_init();             /// this is currently empty...
     IMU_init();
 
     // Initialise task modules
