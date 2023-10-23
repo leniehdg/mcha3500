@@ -125,7 +125,7 @@ void observer_update()
     yi_f32[0] = get_acc_angle();	
     yi_f32[1] = get_gyroY();
 
-	// printf("IMU --> accel_angle: %f, vel: %f\n", yi_f32[0], yi_f32[1]);
+	printf("IMU --> accel_angle: %f, vel: %f\n", yi_f32[0], yi_f32[1]);
 
 
     /* Kalman filter update steps	*/
@@ -169,12 +169,12 @@ void observer_update()
 
 float observer_get_theta(void)	// x1
 {
-	return xhm_f32[0];
+	return xhm_f32[1];
 }
 
 float observer_get_dtheta(void)	// x2
 {
-	return xhm_f32[1];
+	return xhm_f32[0];
 }
 
 float observer_get_ptheta(float dtheta)
@@ -183,7 +183,7 @@ float observer_get_ptheta(float dtheta)
     float A = 46.9783;
     float B = 0.2900;
 
-    float omega = get_motor_revs();
+    float omega = get_motor_revs();		// velocity (rad/s)
 
 	// ASSUMING DTHETA IS SECOND STATE (xhm_f32[1])
     float ptheta = (dtheta + omega*B) / A;   // dtheta/A + B + A*omega

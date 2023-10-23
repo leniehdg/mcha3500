@@ -86,13 +86,19 @@ static void balance_begin(void)
     ctrl_set_x2_int(ptheta);
     // 3. Get control
     ctrl_update();
-    // float wiggle = getControl();
-    // printf("Control output %f\n", wiggle);
+    float wiggle = getControl()*0.5;
+    // printf("Control output: %f\n", wiggle);
+    // float ctrl_dtheta = ctrl_get_dtheta();
+    // float ctrl_dptheta = ctrl_get_dPtheta();
+    // printf("dtheta: %f, dptheta: %f\n", ctrl_dtheta, ctrl_dptheta);
 
 
-    // /*      MAGIC         */
-    // // 4. Do control
+    /*      MAGIC         */
+    // 4. Do control
     // set_motor_revs(wiggle);
+    // float vel = get_motor_revs();
+    // printf("velocity (rad/s): %f\n\n", vel);
+    test_stepper_motor();
 
   }
 }

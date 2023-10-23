@@ -152,7 +152,7 @@ void ctrl_update(void)
     }
 
     ctrl_u_prev_f32[0] = ctrl_u_f32[0];
-    printf("Control action with slew (u) %f\n", ctrl_u_f32[0]);
+    // printf("Control action with slew (u): %f\n", ctrl_u_f32[0]);
 
 
     /*      Update integrator state     */

@@ -56,7 +56,7 @@ void stepper_motor_PWM_init(void) {
     sConfigPWM1.OCPolarity = TIM_OCPOLARITY_HIGH;
     sConfigPWM1.OCFastMode = TIM_OCFAST_ENABLE;
     HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigPWM1, TIM_CHANNEL_1);
-    HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
+    // HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
 
     // Initialize TIM4 for PWM on PB4
     __HAL_RCC_TIM4_CLK_ENABLE();
@@ -72,7 +72,7 @@ void stepper_motor_PWM_init(void) {
     sConfigPWM2.OCPolarity = TIM_OCPOLARITY_HIGH;
     sConfigPWM2.OCFastMode = TIM_OCFAST_ENABLE;
     HAL_TIM_PWM_ConfigChannel(&htim4, &sConfigPWM2, TIM_CHANNEL_1);
-    HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
+    // HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
 
     // GPIO configuration for PA6
     GPIO_InitTypeDef GPIO_InitStruct1;
@@ -98,8 +98,8 @@ void stepper_motor_PWM_init(void) {
     __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 2000);
     __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_1, 2000);    
     // Start PWM
-    HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
-    HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);   
+    // HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
+    // HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);   
 
     // Motor 1 direction signal initialisation
     GPIO_InitTypeDef GPIO_InitStruc3;
@@ -133,13 +133,14 @@ void stepper_motor_PWM_init(void) {
     HAL_GPIO_Init(MS_PORT, &GPIO_InitStruct3);
     
     // Set initial microstepping configuration
-    Microstepping_SetHalfStep();
+    // Microstepping_SetHalfStep();
+
     // Set initial motor signal
     HAL_GPIO_WritePin(MOTOR1_DIR_PORT, MOTOR1_DIR_PIN, MOTOR1_FORWARD);
     HAL_GPIO_WritePin(MOTOR2_DIR_PORT, MOTOR2_DIR_PIN, MOTOR2_FORWARD);
+
     // Set initial motor signals to be quiet (no movement)
-    HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_1);
-    HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_1);
+    stop_motor();
     HAL_GPIO_WritePin(MOTOR1_STP_PORT, MOTOR1_STP_PIN, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(MOTOR2_STP_PORT, MOTOR2_STP_PIN, GPIO_PIN_RESET);
 }
@@ -212,48 +213,6 @@ void Microstepping_SetThirtySecondStep(void) {
 }
 
 
-//------------------------------------------TEST FUNCTION------------------------------------------//
-
-void test_stepper_motor(void)
-{
-    printf("Starting test I thinks\n");
-    // Number of steps for the motors to take
-    int num_steps = 100;
-
-    // Initialise the motors and PWM
-    stepper_motor_PWM_init();
-    Microstepping_SetThirtySecondStep();
-
-    // Initialise the direction for both motors
-    HAL_GPIO_WritePin(MOTOR1_DIR_PORT, MOTOR1_DIR_PIN, MOTOR1_FORWARD); // Set direction for motor 1 to forward
-    HAL_GPIO_WritePin(MOTOR2_DIR_PORT, MOTOR2_DIR_PIN, MOTOR2_FORWARD); // Set direction for motor 2 to forward
-
-    // Loop to generate steps
-    for (int i = 0; i <= num_steps; i++)
-    {
-        // Generate dummy prescaler
-        float prescaler = 40.0;
-        //printf("Single step\n");
-
-        // Set the prescaler value for TIM3 and TIM4
-        __HAL_TIM_SET_PRESCALER(&htim3, prescaler+1);
-        __HAL_TIM_SET_PRESCALER(&htim4, prescaler+1);
-        //printf("Prescaler %f\n", prescaler);
-
-        // Set the compare value for TIM3 and TIM4, channel 1
-
-    }
-
-    // // Turn off both motors
-    // __HAL_TIM_SET_PRESCALER(&htim3, 0);
-    // __HAL_TIM_SET_PRESCALER(&htim4, 0);
-    // // Set the compare value for TIM3 and TIM4, channel 1
-    // __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0);
-    // __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_1, 0);
-    // HAL_GPIO_WritePin(MOTOR1_STP_PORT, MOTOR1_STP_PIN, GPIO_PIN_RESET);
-    // HAL_GPIO_WritePin(MOTOR2_STP_PORT, MOTOR2_STP_PIN, GPIO_PIN_RESET);
-}
-
 
 //------------------------------------------MOTOR OPERATION FUNCTION------------------------------------------//
 
@@ -274,38 +233,41 @@ void start_motor(void)
     Microstepping_SetSixteenthStep();
 }
 
+
 void set_motor_revs(float input)
 {
+    start_motor();
+    
     revs = input / 6.2831853071796; // Convert from radians per second to revolutions.
-    K = (200 * microstep) * 2 * 3.14159265359; // Assuming 200 steps per revolution and 2 * pi
+    K = (200 * microstep) * 2 * 3.14159265359; // Assuming 200 steps per revolution, 1 rev = 2 * pi
 
-    // If the converted input is between 0 and 0.05 (exclusive), perform the following:
+    // If the converted input is between 0 and 0.02 (exclusive), perform the following:
     if (revs <= 0.02 && revs > 0)
     {
         // Calculate and set velocity, K, and prescaler values.
-        velocity = 2 * 2 * 3.14159265359;
+        velocity = 1000;    // 2 * 2 * 3.14159265359
         prescaler = (1e7) / (velocity * K);
         // Set motor direction pins (unsure)
         HAL_GPIO_WritePin(MOTOR1_DIR_PORT, MOTOR1_DIR_PIN, MOTOR1_BACKWARD);
         HAL_GPIO_WritePin(MOTOR2_DIR_PORT, MOTOR2_DIR_PIN, MOTOR2_BACKWARD);
     }
 
-    // If the converted input is between -0.05 (exclusive) and 0 (inclusive), perform the following:
+    // If the converted input is between -0.02 (exclusive) and 0 (inclusive), perform the following:
     if (revs <= 0 && revs >= -0.02)
     {
         // Calculate and set velocity, K, and prescaler values.
-        velocity = 2 * 2 * 3.14159265359;
+        velocity = 1000;    // 2 * 2 * 3.14159265359
         prescaler = (1e7) / (velocity * K);
         // Set motor direction pins (unsure)
         HAL_GPIO_WritePin(MOTOR1_DIR_PORT, MOTOR1_DIR_PIN, MOTOR1_FORWARD);
         HAL_GPIO_WritePin(MOTOR2_DIR_PORT, MOTOR2_DIR_PIN, MOTOR2_FORWARD);
     }
 
-    // If the input is greater than 0.05, perform the following:
+    // If the input is greater than 0.02, perform the following:
     else if (revs > 0.02)
     {
         // Calculate and set velocity, K, and prescaler values.
-        velocity = revs * 2 * 3.14159265359;
+        velocity = revs * 2 * 3.14159265359;    // velocity is rad/s
         prescaler = (1e7) / (velocity * K);
         // Set motor direction pins (unsure)
         HAL_GPIO_WritePin(MOTOR1_DIR_PORT, MOTOR1_DIR_PIN, MOTOR1_BACKWARD);
@@ -313,7 +275,7 @@ void set_motor_revs(float input)
         
     }
 
-    // If the input is less than -0.05, perform the following:
+    // If the input is less than -0.02, perform the following:
     else if (revs < -0.02)
     {
         revs = -revs; // Take the absolute value of input.
@@ -327,6 +289,8 @@ void set_motor_revs(float input)
 
     __HAL_TIM_SET_PRESCALER(&htim3, prescaler);
     __HAL_TIM_SET_PRESCALER(&htim4, prescaler);
+
+    printf("prescaler: %f\n", prescaler);
 }
 
 float get_motor_revs(void)
@@ -340,3 +304,67 @@ void stop_motor(void)
     HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_1);
     HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_1);
 }
+
+
+//------------------------------------------TEST FUNCTION------------------------------------------//
+
+void test_stepper_motor(void)
+{
+    // printf("Starting test I thinks\n");
+
+    start_motor();
+
+    // Initialise the direction for both motors
+    HAL_GPIO_WritePin(MOTOR1_DIR_PORT, MOTOR1_DIR_PIN, MOTOR1_FORWARD); // Set direction for motor 1 to forward
+    HAL_GPIO_WritePin(MOTOR2_DIR_PORT, MOTOR2_DIR_PIN, MOTOR2_FORWARD); // Set direction for motor 2 to forward
+
+    // Dummy
+    float input = 50;
+    // Calculate and set velocity, K, and prescaler values.
+    input = input / 6.2831853071796; // Convert from radians per second to revolutions.
+    K = (200 * 2 * 3.14159265359) * microstep; // Assuming 200 steps per revolution.
+    velocity = input * 360 * 3.14159265359 / 180;
+    prescaler = (1e7) / (velocity * K);
+    
+    // Set the prescaler value for TIM3 and TIM4
+    __HAL_TIM_SET_PRESCALER(&htim3, prescaler);
+    __HAL_TIM_SET_PRESCALER(&htim4, prescaler);
+
+    printf("prescaler: %f\n", prescaler);
+
+    // // Number of steps for the motors to take
+    // int num_steps = 100;
+
+    // // Initialise the motors and PWM
+    // stepper_motor_PWM_init();
+    // Microstepping_SetThirtySecondStep();
+
+    // // Initialise the direction for both motors
+    // HAL_GPIO_WritePin(MOTOR1_DIR_PORT, MOTOR1_DIR_PIN, MOTOR1_FORWARD); // Set direction for motor 1 to forward
+    // HAL_GPIO_WritePin(MOTOR2_DIR_PORT, MOTOR2_DIR_PIN, MOTOR2_FORWARD); // Set direction for motor 2 to forward
+
+    // // Loop to generate steps
+    // for (int i = 0; i <= num_steps; i++)
+    // {
+    //     // Generate dummy prescaler
+    //     float prescaler = 1000.0;
+
+    //     // Set the prescaler value for TIM3 and TIM4
+    //     __HAL_TIM_SET_PRESCALER(&htim3, prescaler+1);
+    //     __HAL_TIM_SET_PRESCALER(&htim4, prescaler+1);
+    //     //printf("Prescaler %f\n", prescaler);
+
+    //     // Set the compare value for TIM3 and TIM4, channel 1
+
+    // }
+
+    // // Turn off both motors
+    // __HAL_TIM_SET_PRESCALER(&htim3, 0);
+    // __HAL_TIM_SET_PRESCALER(&htim4, 0);
+    // // Set the compare value for TIM3 and TIM4, channel 1
+    // __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0);
+    // __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_1, 0);
+    // HAL_GPIO_WritePin(MOTOR1_STP_PORT, MOTOR1_STP_PIN, GPIO_PIN_RESET);
+    // HAL_GPIO_WritePin(MOTOR2_STP_PORT, MOTOR2_STP_PIN, GPIO_PIN_RESET);
+}
+
