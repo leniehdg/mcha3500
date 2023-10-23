@@ -83,7 +83,7 @@ static void balance_begin(void)
     /*      CONTROLLER     */
     // 2. Send states
     ctrl_set_x1_int(theta);  
-    ctrl_set_x2_int(ptheta);
+    ctrl_set_x2_int(dtheta);
     // 3. Get control
     ctrl_update();
     float wiggle = getControl()*0.5;
