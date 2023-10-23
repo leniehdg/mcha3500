@@ -57,7 +57,7 @@ void logging_start(void)
     int32_t encoder_count = 0;
 
     /* function pointer to pend logging func */
-    log_function = &log_encoder;    //   &log_imu;    // &log_pendulum;
+    log_function = &log_imu;    //   &log_imu;    // &log_pendulum;
 
     /* Start the data logging timer */
     osStatus_t status = osTimerStart(timerHandle, 5); // 5 ms interval (timerPeriod)

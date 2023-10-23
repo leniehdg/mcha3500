@@ -30,7 +30,7 @@ int main(void)
     heartbeat_task_init();
 
     // pendulum_init();
-    // stepper_motor_PWM_init();
+    stepper_motor_PWM_init();
     motor_encoder_init();
     logging_init();
     IMU_init();
@@ -39,7 +39,7 @@ int main(void)
     // Initialise task modules
     cmd_task_init();
     // dummy_task_init();
-    // test_stepper_motor();
+    test_stepper_motor();
 
     // Start scheduler
     osKernelStart();
