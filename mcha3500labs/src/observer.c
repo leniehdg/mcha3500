@@ -171,12 +171,12 @@ void observer_update()
 
 float observer_get_theta(void)	// x1
 {
-	return xhm_f32[1];
+	return xhm_f32[0];
 }
 
 float observer_get_dtheta(void)	// x2
 {
-	return xhm_f32[0];
+	return xhm_f32[1];
 }
 
 float observer_get_ptheta(float dtheta)
