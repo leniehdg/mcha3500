@@ -9,6 +9,8 @@
 #include "observer.h"
 #include "stepper.h"
 
+#define CTRL_N_INPUT 1 // number of controller inputs (reference signals)
+#define CTRL_N_INT_STATE 3 // number of controller states (states)
 
 float slew = 1;
 
@@ -117,34 +119,43 @@ void ctrl_set_x2_int(float x2)
 /* Update control output */
 void ctrl_update(void)
 {
-    // TODO: Compute control action
+    // Compute control action
     arm_mat_mult_f32(&ctrl_mK, &ctrl_x_int, &ctrl_u);
-    //printf("test");
-       
-    if(fabs(ctrl_u_f32[0]) > fabs(ctrl_u_prev_f32[0])+slew)
-     {
-         if(ctrl_u_prev_f32[0]<ctrl_u_f32[0])
-         {
-             ctrl_u_f32[0] = ctrl_u_prev_f32[0] + slew;
-         }
-         if(ctrl_u_prev_f32[0]>ctrl_u_f32[0])
-         {
-             ctrl_u_f32[0] = ctrl_u_prev_f32[0] - slew;
-         }
-     }
-    else if(fabs(ctrl_u_f32[0]) < fabs(ctrl_u_prev_f32[0])-slew)
-     {
-         if(ctrl_u_prev_f32[0]<ctrl_u_f32[0])
-         {
-             ctrl_u_f32[0] = ctrl_u_prev_f32[0] + slew;
-         }
-         if(ctrl_u_prev_f32[0]>ctrl_u_f32[0])
-         {
-             ctrl_u_f32[0] = ctrl_u_prev_f32[0] - slew;
-         }
-     }
+
+    // // Update integrator state
+    // arm_mat_mult_f32(&ctrl_Az, &ctrl_x_int, &ctrl_z);
+
+    // // Copy updated value of integrator state into state vector
+    // ctrl_x_int_f32[2] = ctrl_z_f32[0];
     
-     ctrl_u_prev_f32[0] = ctrl_u_f32[0];
+    // // TODO: Compute control action
+    // arm_mat_mult_f32(&ctrl_mK, &ctrl_x_int, &ctrl_u);
+    // //printf("test");
+       
+    // if(fabs(ctrl_u_f32[0]) > fabs(ctrl_u_prev_f32[0])+slew)
+    //  {
+    //      if(ctrl_u_prev_f32[0]<ctrl_u_f32[0])
+    //      {
+    //          ctrl_u_f32[0] = ctrl_u_prev_f32[0] + slew;
+    //      }
+    //      if(ctrl_u_prev_f32[0]>ctrl_u_f32[0])
+    //      {
+    //          ctrl_u_f32[0] = ctrl_u_prev_f32[0] - slew;
+    //      }
+    //  }
+    // else if(fabs(ctrl_u_f32[0]) < fabs(ctrl_u_prev_f32[0])-slew)
+    //  {
+    //      if(ctrl_u_prev_f32[0]<ctrl_u_f32[0])
+    //      {
+    //          ctrl_u_f32[0] = ctrl_u_prev_f32[0] + slew;
+    //      }
+    //      if(ctrl_u_prev_f32[0]>ctrl_u_f32[0])
+    //      {
+    //          ctrl_u_f32[0] = ctrl_u_prev_f32[0] - slew;
+    //      }
+    //  }
+    
+    //  ctrl_u_prev_f32[0] = ctrl_u_f32[0];
 
     // TODO: Update integrator state
     arm_mat_mult_f32(&ctrl_Az, &ctrl_x_int, &ctrl_Azmx);
@@ -162,39 +173,4 @@ float getControl(void)
     return ctrl_u_f32[0];
 }
 
-float getdPtheta(void)
-{
-    return ctrl_x_int_f32[1];
-}
 
-float getdtheta(void)
-{
-    return ctrl_x_int_f32[0];
-}
-
-///*******************//////////////////// Onboard baby ///*******************////////////////////
-
-// void ctrl_set_x_int(void)
-// { 
-//  // Update state x2
-//  ctrl_x_int_f32[0] = observer_get_theta();
-//  ctrl_x_int_f32[1] = observer_get_ptheta();
-// }
-
-
-/*  rename to wiggle    */
-// void do_the_balance(void)
-// {
-//     // Get states
-//     kalman_update_IMU();
-	
-//     float x1h = get_obs_x1();
-// 	float x2h = get_obs_x2();
-//     // Get control
-//     ctrl_update();
-//     float phi = getControl();
-    
-//     // Do control
-
-//     // Repeat
-// }

@@ -141,7 +141,9 @@ void observer_update()
     // 5. Update the estimated state xhm = Ad * xhp
     arm_mat_mult_f32(&Ad, &xhp, &xhm);
 
-    // printf("OBS --> theta = %f dtheta = %f\n", xhm_f32[0], xhm_f32[1]);
+	// float theta = observer_get_theta();
+	// float dtheta = observer_get_dtheta();
+    // printf("OBS --> theta = %f dtheta = %f\n", theta, dtheta);
 
 	// return yi_f32[0];	// send imu accel_angle
 
@@ -171,12 +173,12 @@ void observer_update()
 
 float observer_get_theta(void)	// x1
 {
-	return xhm_f32[0];
+	return xhm_f32[1];
 }
 
 float observer_get_dtheta(void)	// x2
 {
-	return xhm_f32[1];
+	return xhm_f32[0];
 }
 
 float observer_get_ptheta(float dtheta)

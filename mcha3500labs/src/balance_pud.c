@@ -78,9 +78,7 @@ static void balance_begin(void)
     ctrl_update();
     float wiggle = getControl();
     printf("Control output: %f\n", wiggle);
-    // float ctrl_dtheta = ctrl_get_dtheta();
-    // float ctrl_dptheta = ctrl_get_dPtheta();
-    // printf("dtheta: %f, dptheta: %f\n", ctrl_dtheta, ctrl_dptheta);
+
 
     // Initial wait period: 2 seconds
     if (logCount < 400)
@@ -94,7 +92,7 @@ static void balance_begin(void)
     {  
         /*      MAGIC         */
         // 4. Do control
-        // set_motor_revs(wiggle);
+        set_motor_revs(wiggle);
         // float vel = get_motor_revs();
         // test_stepper_motor();
 
