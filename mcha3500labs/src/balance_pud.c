@@ -94,8 +94,8 @@ static void balance_begin(void)
     {  
         /*      MAGIC         */
         // 4. Do control
-        set_motor_revs(wiggle);
-        float vel = get_motor_revs();
+        // set_motor_revs(wiggle);
+        // float vel = get_motor_revs();
         // test_stepper_motor();
 
     }

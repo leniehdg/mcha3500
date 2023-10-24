@@ -16,7 +16,7 @@ void ctrl_update(void);
 
 enum {
 CTRL_N_INPUT = 1, // number of controller inputs (reference signals)
-CTRL_N_STATE = 3, // number of controller states (states)
+CTRL_N_INT_STATE = 3, // number of controller states (states)
 CTRL_N_OUTPUT = 1, // number of controller outputs / plant inputs
 CTRL_N_HORIZON = 10, // control horizon length
 CTRL_N_EQ_CONST = 0, // number of equality constraints
