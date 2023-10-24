@@ -13,7 +13,8 @@ static float ctrl_mK_f32[CTRL_N_INPUT * CTRL_N_STATE] =
 {
     /* negative K, 1x3 */
     // 43.7414767910140,	480.459793467096,	0.949857748811064,  // half l_opt
-    47.1963556855334,	319.391283628879,	3.05405420741840,
+    // 47.1963556855334,	319.391283628879,	3.05405420741840,
+    116.884185690572,	771.039591492346,	9.38549057321377,
 };
 
 static float ctrl_x_f32[CTRL_N_STATE] =
@@ -33,21 +34,22 @@ static float ctrl_u_f32[CTRL_N_INPUT] =
 static float ctrl_Az_f32[CTRL_N_STATE] =
 {
     /* State transition matrix */
-    0,  0.005,  1,
+    0.005,  0,  1,
 };
 
 static float ctrl_z_f32[CTRL_N_INPUT] =
 {
     /* Integrator state */
     // -0.361754064429894,  // half l_opt
-    -0.251670465943562,
+    // -0.251670465943562,
+    0,
 };
 
 static float ctrl_Nx_f32[CTRL_N_STATE] =
 {
     /* Integrator state */
     0.000,
-    1.000,
+    0.0062,     // 1.000,
     0.000,
 };
 
@@ -55,7 +57,8 @@ static float ctrl_Nu_f32[CTRL_N_INPUT] =
 {
     
     // 246.125322879505,    // half l_opt
-    161.990707694636,
+    // 161.990707694636,
+    1,
 
 };
 

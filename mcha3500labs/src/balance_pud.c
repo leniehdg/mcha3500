@@ -73,7 +73,7 @@ static void balance_begin(void)
     /*      CONTROLLER     */
     // 2. Send states
     ctrl_set_x1_int(theta);  
-    ctrl_set_x2_int(dtheta);
+    ctrl_set_x2_int(ptheta);
     // 3. Get control
     ctrl_update();
     float wiggle = getControl();
@@ -92,7 +92,7 @@ static void balance_begin(void)
     {  
         /*      MAGIC         */
         // 4. Do control
-        set_motor_revs(wiggle);
+        // set_motor_revs(wiggle);
         // float vel = get_motor_revs();
         // test_stepper_motor();
 
