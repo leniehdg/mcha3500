@@ -13,9 +13,9 @@
 static float32_t Kb_f32[6] =        
 {
 	// CHANGE FROM KALMAN_FILTER SCRIPT: optimal kalman gain, called Kk in MATLAB script
-	0.1304,    1.2434,
-	0.0343,    0.0836,
-   -0.1100,   -0.2654,
+	0.1399,    1.2619,
+    0.0353,    0.0854,
+   -0.1190,   -0.2842,
 };
 
 
