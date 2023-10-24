@@ -12,9 +12,9 @@
 // INITIALISE from MATLAB
 static float32_t Kb_f32[6] =        // optimal kalman gain, last Kk value in Kalman_script.m
 {
-	0.1304,    1.2434,
-	0.0343,    0.0836,
-   -0.1100,   -0.2654,
+	0.1399,    1.2619,
+    0.0353,    0.0854,
+   -0.1190,   -0.2842,
 };
 
 // INITIALISE from MATLAB 
@@ -118,7 +118,7 @@ void observer_init(void)
 }
 
 
-void observer_update()
+float observer_update()
 {
 	/*	Set y	*/
 
@@ -142,6 +142,8 @@ void observer_update()
     arm_mat_mult_f32(&Ad, &xhp, &xhm);
 
     // printf("OBS --> theta = %f dtheta = %f\n", xhm_f32[0], xhm_f32[1]);
+
+	return yi_f32[0];	// send imu accel_angle
 
 	/* 	
 	

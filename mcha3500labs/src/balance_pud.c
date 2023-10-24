@@ -72,7 +72,7 @@ static void balance_begin(void)
 
     /*      OBSERVER       */
     // 1. Get states
-    observer_update();
+    float accel_angle = observer_update();
     float theta = observer_get_theta();
     float dtheta = observer_get_dtheta();
     // printf("theta (deg): %f, dtheta: %f\n",theta*180/3.1415, dtheta);
@@ -86,7 +86,7 @@ static void balance_begin(void)
     ctrl_set_x2_int(dtheta);
     // 3. Get control
     ctrl_update();
-    float wiggle = getControl()*0.5;
+    float wiggle = getControl();
     // printf("Control output: %f\n", wiggle);
     // float ctrl_dtheta = ctrl_get_dtheta();
     // float ctrl_dptheta = ctrl_get_dPtheta();
@@ -95,7 +95,7 @@ static void balance_begin(void)
 
     /*      MAGIC         */
     // 4. Do control
-    set_motor_revs(wiggle);
+    set_motor_revs(wiggle, accel_angle);
     float vel = get_motor_revs();
     // test_stepper_motor();
 

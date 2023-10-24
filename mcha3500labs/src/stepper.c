@@ -234,11 +234,11 @@ void start_motor(void)
 }
 
 
-void set_motor_revs(float input)
+void set_motor_revs(float input, float accel_angle)
 {
     start_motor();
 
-    printf("input: %f\n", input);
+    // printf("input: %f\n", input);
 
     // If negative, spin motors backwards, don't leave negative in for K and vel eqtns 
     if (input < 0)
@@ -256,6 +256,10 @@ void set_motor_revs(float input)
         HAL_GPIO_WritePin(MOTOR2_DIR_PORT, MOTOR2_DIR_PIN, MOTOR2_FORWARD);
     }
 
+    if (accel_angle > 0.08 && accel_angle < 0.2)
+    {
+        input = 50;
+    }
 
     // If absolute val of input > 550 current limit reached quickly (motors cut out, prescale ~ 0.9)
     float ceiling = 300;
@@ -265,7 +269,7 @@ void set_motor_revs(float input)
     }
     
     // < 5 is too slow (prescale ~ 100)
-    float floor = 5;
+    float floor = 1;
     if (input < floor)
     {
         input = floor;
@@ -283,7 +287,7 @@ void set_motor_revs(float input)
     __HAL_TIM_SET_PRESCALER(&htim3, prescaler);
     __HAL_TIM_SET_PRESCALER(&htim4, prescaler);
 
-    printf("prescaler: %f\n\n", prescaler);
+    // printf("prescaler: %f\n\n", prescaler);
 
 
     // // If the converted input is between 0 and 0.02 (exclusive), perform the following:

@@ -4,7 +4,7 @@
 void stepper_motor_PWM_init(void);
 void test_stepper_motor(void);
 void stepper_init(void);
-void set_motor_revs(float);
+void set_motor_revs(float, float);
 float get_motor_revs(void);
 void start_motor(void);
 void stop_motor(void);
