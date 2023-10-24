@@ -31,7 +31,7 @@ int main(void)
     IMU_init();
 
     // Initialise task modules
-    cmd_task_init();            /// go before IMU_init()???
+    cmd_task_init();           
     ctrl_init();
     observer_init();
     balance_init();             /// to make Pud dance!
