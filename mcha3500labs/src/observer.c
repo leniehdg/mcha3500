@@ -125,7 +125,7 @@ void observer_update()
     yi_f32[0] = get_acc_angle();	
     yi_f32[1] = get_gyroY();
 
-	printf("IMU --> accel_angle: %f, vel: %f\n", yi_f32[0], yi_f32[1]);
+	// printf("IMU --> accel_angle: %f, vel: %f\n", yi_f32[0], yi_f32[1]);
 
 
     /* Kalman filter update steps	*/

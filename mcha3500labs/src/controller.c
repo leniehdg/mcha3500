@@ -13,8 +13,8 @@ static float ctrl_mK_f32[CTRL_N_INPUT * CTRL_N_STATE] =
 {
     /* negative K, 1x3 */
     // FROM RUN_BALANCINGROBOTFLOW.M -> CONTROLLERBALANCINGROBOT OBJ -> K VALUE THEN TAKE THE NEGATIVE!!!
-    // 49.2341729908953,	333.301261681590,	0.305179489453004,  // full l_opt
-    34.7193920981950,	503.833708539922,	0.303927339496828,      // half l_opt
+    49.2341729908953,	333.301261681590,	0.305179489453004,  // full l_opt
+    // 34.7193920981950,	503.833708539922,	0.303927339496828,      // half l_opt
 };
 
 static float ctrl_x_int_f32[CTRL_N_STATE] =
@@ -40,7 +40,8 @@ static float ctrl_Az_f32[CTRL_N_STATE] =
 static float ctrl_z_f32[CTRL_N_INPUT] =
 {
     /* Integrator state */
-    -0.0106070998844487,
+    // -0.0106070998844487,
+    0,
 };
 
 /* Define control matrix variables */

@@ -76,7 +76,7 @@ static void balance_begin(void)
     ctrl_set_x2_int(dtheta);
     // 3. Get control
     ctrl_update();
-    float wiggle = getControl()*0.5;
+    float wiggle = getControl();
     printf("Control output: %f\n", wiggle);
     // float ctrl_dtheta = ctrl_get_dtheta();
     // float ctrl_dptheta = ctrl_get_dPtheta();
