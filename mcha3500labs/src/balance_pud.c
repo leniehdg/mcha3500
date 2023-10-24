@@ -67,7 +67,7 @@ static void balance_begin(void)
     float dtheta = observer_get_dtheta();
     // printf("theta (deg): %f, dtheta: %f\n",theta*180/3.1415, dtheta);
     float ptheta = observer_get_ptheta(dtheta);
-    // printf("ptheta: %f\n",ptheta);
+    // printf("theta (deg): %f, ptheta: %f\n", theta*180/3.1415, ptheta);
 
 
     /*      CONTROLLER     */
@@ -77,6 +77,7 @@ static void balance_begin(void)
     // 3. Get control
     ctrl_update();
     float wiggle = getControl();
+    // wiggle = (wiggle - 51);     // restart offset
     printf("Control output: %f\n", wiggle);
 
 
@@ -94,7 +95,7 @@ static void balance_begin(void)
         // 4. Do control
         // set_motor_revs(wiggle);
         // float vel = get_motor_revs();
-        // test_stepper_motor();
+        // test_stepper_motor();       // 9.7 at 100, 4.87 at 50, 1 at 10, 0.5 at 5
 
     }
 }

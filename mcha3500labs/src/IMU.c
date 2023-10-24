@@ -87,7 +87,7 @@ float get_acc_angle(void)
     float accZ_ms2 = get_accZ();
     float accX_ms2 = get_accX();
     /* Compute IMU angle using accY and accZ using atan2 */
-    float imu_angle = -atan2(accX_ms2, accZ_ms2) + 1.57;   // whoopsie offset (pi/2)
+    float imu_angle = -atan2(accX_ms2, accZ_ms2) + 1.59;   // whoopsie offset (pi/2)
 
     /*  return the IMU angle*/
     return imu_angle;
