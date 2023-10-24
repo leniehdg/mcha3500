@@ -118,7 +118,7 @@ void observer_init(void)
 }
 
 
-float observer_update()
+void observer_update()
 {
 	/*	Set y	*/
 
@@ -143,7 +143,7 @@ float observer_update()
 
     // printf("OBS --> theta = %f dtheta = %f\n", xhm_f32[0], xhm_f32[1]);
 
-	return yi_f32[0];	// send imu accel_angle
+	// return yi_f32[0];	// send imu accel_angle
 
 	/* 	
 	

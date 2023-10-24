@@ -13,7 +13,7 @@
 #define CTRL_N_STATE 2
 #define CTRL_N_INT_STATE 3
 
-float slew = 1;
+float slew = 5;
 
 /* Define control matrix values */
 
@@ -21,7 +21,8 @@ static float ctrl_mK_f32[CTRL_N_INPUT*CTRL_N_INT_STATE] =
 {
     /* negative K, 1x3 */
     // FROM RUN_BALANCINGROBOTFLOW.M -> CONTROLLERBALANCINGROBOT OBJ -> K VALUE THEN TAKE THE NEGATIVE!!!
-    49.2341729908953,	333.301261681590,	0.305179489453004, 
+    // 49.2341729908953,	333.301261681590,	0.305179489453004,
+    34.7193920981950,	503.833708539922,	0.303927339496828, 
 };
 
 static float ctrl_x_int_f32[CTRL_N_INT_STATE] =
@@ -53,7 +54,7 @@ static float ctrl_Az_f32[CTRL_N_INT_STATE] =
 static float ctrl_z_f32[CTRL_N_INPUT] =
 {
     /* Integrator state */
-    0.0,
+    -0.0106,
 };
 
 static float ctrl_Azmx_f32[CTRL_N_INPUT] =
@@ -128,30 +129,30 @@ void ctrl_update(void)
 
     /*      Limit the control action using a slew       */   
 
-    if(fabs(ctrl_u_f32[0]) > fabs(ctrl_u_prev_f32[0])+slew)
-    {
-        if(ctrl_u_prev_f32[0]<ctrl_u_f32[0])
-        {
-            ctrl_u_f32[0] = ctrl_u_prev_f32[0] + slew;
-        }
-        if(ctrl_u_prev_f32[0]>ctrl_u_f32[0])
-        {
-            ctrl_u_f32[0] = ctrl_u_prev_f32[0] - slew;
-        }
-    }
-    else if(fabs(ctrl_u_f32[0]) < fabs(ctrl_u_prev_f32[0])-slew)
-    {
-        if(ctrl_u_prev_f32[0]<ctrl_u_f32[0])
-        {
-            ctrl_u_f32[0] = ctrl_u_prev_f32[0] + slew;
-        }
-        if(ctrl_u_prev_f32[0]>ctrl_u_f32[0])
-        {
-            ctrl_u_f32[0] = ctrl_u_prev_f32[0] - slew;
-        }
-    }
+    // if(fabs(ctrl_u_f32[0]) > fabs(ctrl_u_prev_f32[0])+slew)
+    // {
+    //     if(ctrl_u_prev_f32[0]<ctrl_u_f32[0])
+    //     {
+    //         ctrl_u_f32[0] = ctrl_u_prev_f32[0] + slew;
+    //     }
+    //     if(ctrl_u_prev_f32[0]>ctrl_u_f32[0])
+    //     {
+    //         ctrl_u_f32[0] = ctrl_u_prev_f32[0] - slew;
+    //     }
+    // }
+    // else if(fabs(ctrl_u_f32[0]) < fabs(ctrl_u_prev_f32[0])-slew)
+    // {
+    //     if(ctrl_u_prev_f32[0]<ctrl_u_f32[0])
+    //     {
+    //         ctrl_u_f32[0] = ctrl_u_prev_f32[0] + slew;
+    //     }
+    //     if(ctrl_u_prev_f32[0]>ctrl_u_f32[0])
+    //     {
+    //         ctrl_u_f32[0] = ctrl_u_prev_f32[0] - slew;
+    //     }
+    // }
 
-    ctrl_u_prev_f32[0] = ctrl_u_f32[0];
+    // ctrl_u_prev_f32[0] = ctrl_u_f32[0];
     // printf("Control action with slew (u): %f\n", ctrl_u_f32[0]);
 
 
