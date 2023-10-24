@@ -59,17 +59,6 @@ void ctrl_start(void)
 static void balance_begin(void)
 {
 
-  if (logCount < 400)
-  {
-
-    observer_update();
-    logCount++;
-    
-  }
-
-  else
-  {  
-
     /*      OBSERVER       */
     // 1. Get states
     // float accel_angle = 
@@ -93,13 +82,22 @@ static void balance_begin(void)
     // float ctrl_dptheta = ctrl_get_dPtheta();
     // printf("dtheta: %f, dptheta: %f\n", ctrl_dtheta, ctrl_dptheta);
 
+    // Initial wait period: 2 seconds
+    if (logCount < 400)
+    {
 
-    /*      MAGIC         */
-    // 4. Do control
-    set_motor_revs(wiggle);
-    float vel = get_motor_revs();
-    // test_stepper_motor();
+        logCount++;
+        
+    }
 
-  }
+    else
+    {  
+        /*      MAGIC         */
+        // 4. Do control
+        set_motor_revs(wiggle);
+        float vel = get_motor_revs();
+        // test_stepper_motor();
+
+    }
 }
  

@@ -5,8 +5,9 @@
 void ctrl_init(void);
 void ctrl_set_x1_int(float x1);
 void ctrl_set_x2_int(float x2);
-float ctrl_get_dPtheta(void);
-float ctrl_get_dtheta(void);
+void ctrl_set_x3_int(float x3);
+void ctrl_set_x4_int(float x4);
+
 float getControl(void);
 void ctrl_update(void);
 
@@ -15,7 +16,7 @@ void ctrl_update(void);
 
 enum {
 CTRL_N_INPUT = 1, // number of controller inputs (reference signals)
-CTRL_N_STATE = 4, // number of controller states (states)
+CTRL_N_STATE = 3, // number of controller states (states)
 CTRL_N_OUTPUT = 1, // number of controller outputs / plant inputs
 CTRL_N_HORIZON = 10, // control horizon length
 CTRL_N_EQ_CONST = 0, // number of equality constraints
